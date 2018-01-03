@@ -1,9 +1,12 @@
-﻿<Window x:Class="SimpleCalendar.Window1"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	Title="SimpleCalendar" Height="300" Width="300"
-	>
-	<Grid>
-		
-	</Grid>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window
+	x:Name="wMain"
+	x:Class="SimpleCalendar.Window1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:SimpleCalendar"
+	Title="SimpleCalendar"
+	WindowStyle="SingleBorderWindow"
+	BorderThickness="10,0,10,0"
+	BorderBrush="White"
+	Width="666"
+	Height="692">
+	<local:Calendario />
 </Window>

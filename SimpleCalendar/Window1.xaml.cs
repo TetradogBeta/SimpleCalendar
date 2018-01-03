@@ -24,6 +24,10 @@ namespace SimpleCalendar
 		public Window1()
 		{
 			InitializeComponent();
+			wMain.ResizeMode=ResizeMode.CanMinimize|ResizeMode.NoResize;
+		
 		}
+
+	
 	}
 }
