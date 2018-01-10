@@ -1,7 +1,8 @@
-﻿<UserControl x:Class="SimpleCalendar.DiaCalendario"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<UserControl x:Class="SimpleCalendar.DiaCalendario"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Grid>
-		
+		<Image x:Name="imgFondo"/>
+		<TextBlock x:Name="txtDia"/>
 	</Grid>
 </UserControl>

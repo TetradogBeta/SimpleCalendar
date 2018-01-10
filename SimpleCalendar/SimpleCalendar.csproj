@@ -33,10 +33,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Gabriel.Cat.Utilitats">
-      <HintPath>..\..\..\..\Desktop\Programas\Gabriel.Cat.Utilitats\Gabriel.Cat.Utilitats\bin\Release\Gabriel.Cat.Utilitats.dll</HintPath>
+      <HintPath>..\..\Gabriel.Cat.Utilitats\Gabriel.Cat.Utilitats\bin\Release\Gabriel.Cat.Utilitats.dll</HintPath>
     </Reference>
     <Reference Include="Gabriel.Cat.Wpf">
-      <HintPath>..\..\..\..\Desktop\Programas\Gabriel.Cat.Wpf\Gabriel.Cat.Wpf\bin\Release\Gabriel.Cat.Wpf.dll</HintPath>
+      <HintPath>..\..\Gabriel.Cat.Wpf\Gabriel.Cat.Wpf\bin\Release\Gabriel.Cat.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>

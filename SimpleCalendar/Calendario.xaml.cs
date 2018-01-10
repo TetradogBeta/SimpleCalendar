@@ -27,33 +27,49 @@ namespace SimpleCalendar
 			Castellano,Catalan,Ingles
 				
 		}
-
+		public const int TOTALDIAS=31;
 		public const int MINMES=1;
 		public const int MAXMES=12;
 		LlistaOrdenada<int,Llista<ItemCalendario>> itemsMes;
-		LlistaOrdenada<int,Llista<ItemCalendario>> itemsDia;
+		LlistaOrdenada<int,Llista<ItemCalendario>> itemsDiaPosicionAnual;
+		Llista<DiaCalendario> dias;
 		int añoActual;
 		int mesActual;
 		
 		Idioma idioma;
-
-		public Calendario(int año,int mes)
+		public event EventHandler<DiaSeleccionadoEventArgs> DiaSeleccionado;
+		public Calendario(int año,int mes,IList<ItemCalendario> items)
 		{
+			int diaInicioMes=DiaCalendario.GetDiaInicioMes(año,mes);
+			int diaFinMesActual=DiaCalendario.GetDiaFinMes(año,mes);
+			int dieFinMesAnterior=DiaCalendario.GetDiaFinMes(año,mes-1<1?MAXMES:mes-1);
+			int diaInicioMesPosicionAño;
+			DiaCalendario dia;
+			
 			InitializeComponent();
-			itemsMes=new LlistaOrdenada<int, Llista<ItemCalendario>>();
-			itemsDia=new LlistaOrdenada<int, Llista<ItemCalendario>>();
-			itemsDia.Removed+=QuitarItem;
-			itemsMes.Removed+=QuitarItem;
-			itemsDia.Added+=AñadirItem;
-			itemsMes.Added+=AñadirItem;
+			
 			AñoActual=año;
 			MesActual=mes;
+			diaInicioMesPosicionAño=DiaInicioMesPosicionAño;
+			itemsMes=new LlistaOrdenada<int, Llista<ItemCalendario>>();
+			itemsDiaPosicionAnual=new LlistaOrdenada<int, Llista<ItemCalendario>>();
+			itemsDiaPosicionAnual.Removed+=QuitarItem;
+			itemsMes.Removed+=QuitarItem;
+			itemsDiaPosicionAnual.Added+=AñadirItem;
+			itemsMes.Added+=AñadirItem;
 			
-			for(int i=1;i<32;i++)
-				ugCalendarioTest.Children.Add(new Border(){BorderThickness=new System.Windows.Thickness(2),BorderBrush=Brushes.Transparent, Child=new TextBlock(){Text=i+""},Height=Width,HorizontalAlignment=HorizontalAlignment.Center,VerticalAlignment=VerticalAlignment.Center});
-
+			dias=new Llista<DiaCalendario>();
+			PonItems(items);
+			
+			for(int i=0;i<TOTALDIAS;i++){
+				dia=new DiaCalendario();
+				dia.SetDia(diaInicioMes,diaFinMesActual,dieFinMesAnterior,i,itemsDiaPosicionAnual.GetValue(diaInicioMesPosicionAño+i));
+				dia.MouseLeftButtonDown+=ClickDia;
+				ugCalendarioTest.Children.Add(dia);
+				dias.Add(dia);
+			}
 		}
-		public Calendario(DateTime fecha):this(fecha.Year,fecha.Month)
+		public Calendario(DateTime fecha,IList<ItemCalendario> items):this(fecha.Year,fecha.Month,items)
 		{
 		}
 
@@ -98,9 +114,49 @@ namespace SimpleCalendar
 				PonNombreMes();
 			}
 		}
+		public int DiaInicioMesPosicionAño
+		{
+			get{
+				int posicion=1;
+				for(int i=1;i<MesActual;i++)
+				{
+					posicion+=DiaCalendario.GetDiaFinMes(AñoActual,i);
+				}
+				return posicion;
+				
+			}
+		}
+
+		void ClickDia(object sender, MouseButtonEventArgs e)
+		{
+			DiaCalendario dia=sender as DiaCalendario;
+			int mes=MesActual;
+			int año=AñoActual;
+			if(DiaSeleccionado!=null)
+			{
+				
+				if(dia.Dia>20&&dias.IndexOf(dia)<10){
+					mes=MesActual-1==0?MAXMES:MesActual-1;
+					if(mes==MAXMES)
+						año=AñoActual-1;
+					
+				}
+				
+				DiaSeleccionado(this,new DiaSeleccionadoEventArgs(new DateTime(año,mes,dia.Dia),dia.Items));
+			}
+		}
+
 		void PonDias()
 		{
-			//poner el
+			int diaInicioMes=DiaCalendario.GetDiaInicioMes(AñoActual,MesActual);
+			int diaFinMesActual=DiaCalendario.GetDiaFinMes(AñoActual,MesActual);
+			int dieFinMesAnterior=DiaCalendario.GetDiaFinMes(AñoActual,MesActual-1<1?MAXMES:MesActual-1);
+			int diaInicioMesPosicionAño=DiaInicioMesPosicionAño;
+			
+			for(int i=0;i<TOTALDIAS;i++)
+			{
+				dias[i].SetDia(diaInicioMes,diaFinMesActual,dieFinMesAnterior,i,itemsDiaPosicionAnual.GetValue(diaInicioMesPosicionAño+i));
+			}
 		}
 
 		void PonNombreMes()
@@ -121,33 +177,25 @@ namespace SimpleCalendar
 			txtMes.Text=new DateTime(añoActual,mesActual,1).NombreMes(idiomaCultural);
 		}
 
+		void PonItems(IList<ItemCalendario> items)
+		{
+			//los pone en las listas itemsMes y itemsDiaPosicionAnual
+			//solo añadir a una lista luego los eventos se encargan de eso :D a no ser que se relentice...
+		}
 		
 
+		
 		void QuitarItem(object sender, DicEventArgs<int, Llista<ItemCalendario>> e)
 		{
-			if(e.Items.Count>0){
-				if(sender==itemsMes)
-				{
-					if(itemsDia.ContainsKey(e.Items[0].Key))
-						itemsDia.RemoveRange(e.Items.KeysToArray());
-				}else{
-					if(itemsMes.ContainsKey(e.Items[0].Key))
-						itemsMes.RemoveRange(e.Items.KeysToArray());
-				}}
+			throw new NotImplementedException();
 		}
 
 		void AñadirItem(object sender, DicEventArgs<int, Llista<ItemCalendario>> e)
 		{
-			if(e.Items.Count>0){
-				if(sender==itemsMes)
-				{
-					if(!itemsDia.ContainsKey(e.Items[0].Key))
-						itemsDia.AddRange(e.Items);
-				}else{
-					if(!itemsMes.ContainsKey(e.Items[0].Key))
-						itemsMes.AddRange(e.Items);
-				}}
+			throw new NotImplementedException();
 		}
+		
+	
 	}
 
 	public class DiaSeleccionadoEventArgs:EventArgs
