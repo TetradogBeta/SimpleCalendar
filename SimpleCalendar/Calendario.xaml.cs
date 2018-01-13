@@ -38,14 +38,14 @@ namespace SimpleCalendar
 		
 		Idioma idioma;
 		public event EventHandler<DiaSeleccionadoEventArgs> DiaSeleccionado;
-		public Calendario(int año,int mes,IList<ItemCalendario> items)
+		public Calendario(int año,int mes,IList<ItemCalendario> items,Idioma idioma=Idioma.Castellano)
 		{
 			int diaInicioMes=DiaCalendario.GetDiaInicioMes(año,mes);
 			int diaFinMesActual=DiaCalendario.GetDiaFinMes(año,mes);
 			int dieFinMesAnterior=DiaCalendario.GetDiaFinMes(año,mes-1<1?MAXMES:mes-1);
 			int diaInicioMesPosicionAño;
 			DiaCalendario dia;
-			
+			this.idioma=idioma;
 			InitializeComponent();
 			
 			AñoActual=año;
