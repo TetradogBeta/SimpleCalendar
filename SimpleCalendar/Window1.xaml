@@ -8,5 +8,5 @@
 	BorderBrush="White"
 	Width="666"
 	Height="692">
-	<local:Calendario />
+<local:Calendario/>
 </Window>

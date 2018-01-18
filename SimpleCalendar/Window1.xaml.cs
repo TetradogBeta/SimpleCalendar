@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Win32;
 
 namespace SimpleCalendar
 {
@@ -23,9 +24,12 @@ namespace SimpleCalendar
 	{
 		public Window1()
 		{
+			OpenFileDialog opnFile=new OpenFileDialog();
+			opnFile.ShowDialog();
+			DiaCalendario.pathTest=opnFile.FileName;
 			InitializeComponent();
 			wMain.ResizeMode=ResizeMode.CanMinimize|ResizeMode.NoResize;
-		
+	
 		}
 
 	

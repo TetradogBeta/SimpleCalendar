@@ -27,7 +27,7 @@ namespace SimpleCalendar
 			Castellano,Catalan,Ingles
 				
 		}
-		public const int TOTALDIAS=31;
+		public const int TOTALDIAS=6*7;
 		public const int MINMES=1;
 		public const int MAXMES=12;
 		LlistaOrdenada<int,Llista<ItemCalendario>> itemsMes;
@@ -35,12 +35,15 @@ namespace SimpleCalendar
 		Llista<DiaCalendario> dias;
 		int añoActual;
 		int mesActual;
-		
 		Idioma idioma;
 		public event EventHandler<DiaSeleccionadoEventArgs> DiaSeleccionado;
+
+		public Calendario():this(DateTime.Now.Year,DateTime.Now.Month,new ItemCalendario[]{})
+		{}
+		
 		public Calendario(int año,int mes,IList<ItemCalendario> items,Idioma idioma=Idioma.Castellano)
 		{
-			int diaInicioMes=DiaCalendario.GetDiaInicioMes(año,mes);
+			int diaInicioMes=(int)DiaCalendario.GetDiaInicioMes(año,mes);
 			int diaFinMesActual=DiaCalendario.GetDiaFinMes(año,mes);
 			int dieFinMesAnterior=DiaCalendario.GetDiaFinMes(año,mes-1<1?MAXMES:mes-1);
 			int diaInicioMesPosicionAño;
@@ -48,8 +51,7 @@ namespace SimpleCalendar
 			this.idioma=idioma;
 			InitializeComponent();
 			
-			AñoActual=año;
-			MesActual=mes;
+			
 			diaInicioMesPosicionAño=DiaInicioMesPosicionAño;
 			itemsMes=new LlistaOrdenada<int, Llista<ItemCalendario>>();
 			itemsDiaPosicionAnual=new LlistaOrdenada<int, Llista<ItemCalendario>>();
@@ -63,11 +65,12 @@ namespace SimpleCalendar
 			
 			for(int i=0;i<TOTALDIAS;i++){
 				dia=new DiaCalendario();
-				dia.SetDia(diaInicioMes,diaFinMesActual,dieFinMesAnterior,i,itemsDiaPosicionAnual.GetValue(diaInicioMesPosicionAño+i));
 				dia.MouseLeftButtonDown+=ClickDia;
 				ugCalendarioTest.Children.Add(dia);
 				dias.Add(dia);
 			}
+			AñoActual=año;
+			MesActual=mes;
 		}
 		public Calendario(DateTime fecha,IList<ItemCalendario> items):this(fecha.Year,fecha.Month,items)
 		{
@@ -148,14 +151,30 @@ namespace SimpleCalendar
 
 		void PonDias()
 		{
-			int diaInicioMes=DiaCalendario.GetDiaInicioMes(AñoActual,MesActual);
+			int diaInicioMes=(int)DiaCalendario.GetDiaInicioMes(AñoActual,MesActual);
 			int diaFinMesActual=DiaCalendario.GetDiaFinMes(AñoActual,MesActual);
 			int dieFinMesAnterior=DiaCalendario.GetDiaFinMes(AñoActual,MesActual-1<1?MAXMES:MesActual-1);
 			int diaInicioMesPosicionAño=DiaInicioMesPosicionAño;
-			
+			IList<ItemCalendario> items;
+			for(int i=0;i<diaInicioMes-1;i++)
+			{
+				//los pongo en gris
+				dias[i].EstaEnElMesActual(false); 
+			}
 			for(int i=0;i<TOTALDIAS;i++)
 			{
-				dias[i].SetDia(diaInicioMes,diaFinMesActual,dieFinMesAnterior,i,itemsDiaPosicionAnual.GetValue(diaInicioMesPosicionAño+i));
+				if(itemsDiaPosicionAnual.ContainsKey(diaInicioMesPosicionAño+i))
+					items=itemsDiaPosicionAnual.GetValue(diaInicioMesPosicionAño+i);
+				else items=new ItemCalendario[0];
+				dias[i].SetDia(diaInicioMes,diaFinMesActual,dieFinMesAnterior,i,items);
+			
+			}
+			for(int i=diaInicioMes-1;i<TOTALDIAS;i++)
+					dias[i].EstaEnElMesActual(true);
+			for(int i=diaInicioMes+diaFinMesActual-1;i<TOTALDIAS;i++)
+			{
+				//los pongo en gris
+				dias[i].EstaEnElMesActual(false);
 			}
 		}
 
@@ -195,7 +214,7 @@ namespace SimpleCalendar
 			throw new NotImplementedException();
 		}
 		
-	
+		
 	}
 
 	public class DiaSeleccionadoEventArgs:EventArgs

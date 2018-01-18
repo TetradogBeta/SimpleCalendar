@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Gabriel.Cat.Extension;
 
 namespace SimpleCalendar
 {
@@ -21,15 +22,22 @@ namespace SimpleCalendar
 	/// </summary>
 	public partial class DiaCalendario : UserControl
 	{
+		public static string pathTest;
 		Color colorDia;
 		int dia;
 		List<ItemCalendario> items;
 		public DiaCalendario()
 		{
+			ImageBrush img;
 			InitializeComponent();
 			items=new List<ItemCalendario>();
 			Dia=1;
 			colorDia=Colors.Black;
+			img=new ImageBrush(new System.Drawing.Bitmap(pathTest).ToImage().Source);
+			img.Stretch=Stretch.Uniform;
+			gDiaCalendario.Background=img;
+		
+
 		}
 
 		public Color ColorDia {
@@ -48,7 +56,11 @@ namespace SimpleCalendar
 			set {
 				dia = value;
 				txtDia.Text=dia+"";
-				
+				//poner la animación...
+				if(items.Count>0)
+				{
+				gDiaCalendario.Background=Brushes.LightCoral;
+				}
 			}
 		}
 
@@ -57,6 +69,15 @@ namespace SimpleCalendar
 				return items;
 			}
 		}
+
+		public void EstaEnElMesActual(bool elDiaEstaEnNegrita)
+		{
+			if(elDiaEstaEnNegrita)
+				txtDia.Foreground=Brushes.Black;
+			else txtDia.Foreground=Brushes.Gray;
+
+		}
+
 		public void SetDia(IList<ItemCalendario> items,int dia)
 		{
 			Items.Clear();
@@ -65,11 +86,13 @@ namespace SimpleCalendar
 			Dia=dia;
 			
 		}
-		public void SetDia(int diaInicioMes,int diaFinMesActual,int diaFinMesAnterior,int posicion,IList<ItemCalendario> items,bool posicionBase0O1=true)
+		public void SetDia(int posicionPrimerDiaMes,int diaFinMesActual,int diaFinMesAnterior,int posicion,IList<ItemCalendario> items)
 		{
-			int dia=posicion-diaInicioMes-(posicionBase0O1?1:0);
+			//Dias mes anterior,mesActual,mesSiguiente->con la posicion actual y la informacion que tengo saco el dia
 			
-			if(dia<=0)
+			int dia=posicion-posicionPrimerDiaMes+2;//lunes=1,martes=2
+			
+			if(dia<1)
 			{
 				//mes anterior
 				dia=diaFinMesAnterior+dia;
@@ -83,39 +106,17 @@ namespace SimpleCalendar
 			SetDia(items,dia);
 			
 		}
-		public static int GetDiaInicioMes(int año,int mes)
+		public static DayOfWeek GetDiaInicioMes(int año,int mes)
 		{
 			const int DIAINICIO=1;
-			return (int)new DateTime(año,mes,DIAINICIO).DayOfWeek;
+			return new DateTime(año,mes,DIAINICIO).DayOfWeek;
 			
 		}
 		public static int GetDiaFinMes(int año,int mes)
 		{
-			const int DIAMESIMPAR=31;
-			const int DIAFINMESPAR=30;
-			const int DIAFINFEBRERO=28;
-			const int AÑOVISIESTOFEBRERO=29;
-			const int FEBRERO=2;
-			int diaFin;
-			switch(mes)
-			{
-				case FEBRERO:
-					//si no es visiesto es 28 sino es 29
-					if(año % 4 == 0 && (año % 100 != 0 || año % 400 == 0))
-						diaFin=AÑOVISIESTOFEBRERO;
-					else diaFin=DIAFINFEBRERO;
-					
-					break;
-				default:
-					if(mes%2==0)
-					{
-						diaFin=DIAFINMESPAR;
-					}else{
-						diaFin=DIAMESIMPAR;
-					}
-					break;
-			}
-			return diaFin;
+			if(mes==12)
+				mes=0;
+			return (new DateTime(año,mes+1,1)-new TimeSpan(1,0,0,0)).Day;
 		}
 	}
 }
