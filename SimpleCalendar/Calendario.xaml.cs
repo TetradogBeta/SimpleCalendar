@@ -66,6 +66,7 @@ namespace SimpleCalendar
 			for(int i=0;i<TOTALDIAS;i++){
 				dia=new DiaCalendario();
 				dia.MouseLeftButtonDown+=ClickDia;
+				dia.ItemsAñadidos+=AñadirItems;
 				ugCalendarioTest.Children.Add(dia);
 				dias.Add(dia);
 			}
@@ -130,6 +131,17 @@ namespace SimpleCalendar
 			}
 		}
 
+		void AñadirItems(object sender, DropItemsEventArgs e)
+		{
+			int dia=e.Dia.Dia.Day+DiaInicioMesPosicionAño;
+			if(!itemsDiaPosicionAnual.ContainsKey(dia))
+				itemsDiaPosicionAnual.Add(dia,new Llista<ItemCalendario>());
+			if(!itemsMes.ContainsKey(MesActual))
+				itemsMes.Add(MesActual,new Llista<ItemCalendario>());
+			
+			itemsMes.GetValue(MesActual).AddRange(e.Items);
+			itemsDiaPosicionAnual.GetValue(dia).AddRange(e.Items); 
+		}
 		void ClickDia(object sender, MouseButtonEventArgs e)
 		{
 			DiaCalendario dia=sender as DiaCalendario;
@@ -138,14 +150,14 @@ namespace SimpleCalendar
 			if(DiaSeleccionado!=null)
 			{
 				
-				if(dia.Dia>20&&dias.IndexOf(dia)<10){
+				if(dia.Dia.Day>20&&dias.IndexOf(dia)<10){
 					mes=MesActual-1==0?MAXMES:MesActual-1;
 					if(mes==MAXMES)
 						año=AñoActual-1;
 					
 				}
 				
-				DiaSeleccionado(this,new DiaSeleccionadoEventArgs(new DateTime(año,mes,dia.Dia),dia.Items));
+				DiaSeleccionado(this,new DiaSeleccionadoEventArgs(new DateTime(año,mes,dia.Dia.Day),dia.Items));
 			}
 		}
 
@@ -156,6 +168,7 @@ namespace SimpleCalendar
 			int dieFinMesAnterior=DiaCalendario.GetDiaFinMes(AñoActual,MesActual-1<1?MAXMES:MesActual-1);
 			int diaInicioMesPosicionAño=DiaInicioMesPosicionAño;
 			IList<ItemCalendario> items;
+			DateTime inicioMes=new DateTime(AñoActual,MesActual,1);
 			for(int i=0;i<diaInicioMes-1;i++)
 			{
 				//los pongo en gris
@@ -166,7 +179,7 @@ namespace SimpleCalendar
 				if(itemsDiaPosicionAnual.ContainsKey(diaInicioMesPosicionAño+i))
 					items=itemsDiaPosicionAnual.GetValue(diaInicioMesPosicionAño+i);
 				else items=new ItemCalendario[0];
-				dias[i].SetDia(diaInicioMes,diaFinMesActual,dieFinMesAnterior,i,items);
+				dias[i].SetDia(diaInicioMes,i,inicioMes,items); 
 			
 			}
 			for(int i=diaInicioMes-1;i<TOTALDIAS;i++)

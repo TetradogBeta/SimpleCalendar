@@ -24,9 +24,6 @@ namespace SimpleCalendar
 	{
 		public Window1()
 		{
-			OpenFileDialog opnFile=new OpenFileDialog();
-			opnFile.ShowDialog();
-			DiaCalendario.pathTest=opnFile.FileName;
 			InitializeComponent();
 			wMain.ResizeMode=ResizeMode.CanMinimize|ResizeMode.NoResize;
 	
