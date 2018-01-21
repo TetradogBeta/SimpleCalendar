@@ -18,7 +18,8 @@ namespace SimpleCalendar
 	public class ItemCalendario:ElementoBinario,IComparable,IComparable<ItemCalendario>
 	{
 		public static readonly Formato Formato;
-		DateTime fechaInicio;
+
+		
 		string titulo;
 		string descripcion;
 		FileInfo item;
@@ -26,11 +27,11 @@ namespace SimpleCalendar
 		int posicion;
 		Bitmap bmpMiniatura;
 		Recordatorio recordatorio;
+		
 		static ItemCalendario()
 		{
 			Formato=new Formato();
 			
-			Formato.ElementosArchivo.Add(ElementoBinario.ElementosTipoAceptado(Gabriel.Cat.Serializar.TiposAceptados.DateTime));
 			Formato.ElementosArchivo.Add(ElementoBinario.ElementosTipoAceptado(Gabriel.Cat.Serializar.TiposAceptados.String));
 			Formato.ElementosArchivo.Add(ElementoBinario.ElementosTipoAceptado(Gabriel.Cat.Serializar.TiposAceptados.String));
 			Formato.ElementosArchivo.Add(ElementoBinario.ElementosTipoAceptado(Gabriel.Cat.Serializar.TiposAceptados.String));//FileInfo
@@ -53,14 +54,6 @@ namespace SimpleCalendar
 			}
 			set {
 				posicion = value;
-			}
-		}
-		public DateTime FechaInicio {
-			get {
-				return fechaInicio;
-			}
-			set {
-				fechaInicio = value;
 			}
 		}
 
@@ -136,15 +129,12 @@ namespace SimpleCalendar
 			int compareTo;
 			if(other!=null)
 			{
-				compareTo=fechaInicio.CompareTo(other.fechaInicio);
+				compareTo=Posicion.CompareTo(other.Posicion);
 				if(compareTo==(int)Gabriel.Cat.CompareTo.Iguales)
 				{
-					compareTo=Posicion.CompareTo(other.Posicion);
-					if(compareTo==(int)Gabriel.Cat.CompareTo.Iguales)
-					{
-						compareTo=Hash.CompareTo(other.Hash);
-					}
+					compareTo=Hash.CompareTo(other.Hash);
 				}
+				
 			}else compareTo=(int)Gabriel.Cat.CompareTo.Inferior;
 			
 			return compareTo;
@@ -157,7 +147,7 @@ namespace SimpleCalendar
 		public override byte[] GetBytes(object obj)
 		{
 			ItemCalendario itemCalendario=(ItemCalendario)obj;
-			return ItemCalendario.Formato.GetBytes(new object[]{FechaInicio,Titulo,Descripcion,Item.FullName,Hash,Posicion,Miniatura,Recordatorio});
+			return ItemCalendario.Formato.GetBytes(new object[]{itemCalendario.Titulo,itemCalendario.Descripcion,itemCalendario.Item.FullName,itemCalendario.Hash,itemCalendario.Posicion,itemCalendario.Miniatura,itemCalendario.Recordatorio});
 			
 		}
 
@@ -165,14 +155,13 @@ namespace SimpleCalendar
 		{
 			object[] partes=ItemCalendario.Formato.GetPartsOfObject(bytes);
 			ItemCalendario item=new ItemCalendario();
-			item.fechaInicio=(DateTime)partes[0];
-			item.titulo=(string)partes[1];
-			item.descripcion=(string)partes[2];
-			item.item=new FileInfo((string)partes[3]);
-			item.hash=(string)partes[4];
-			item.posicion=(int)partes[5];
-			item.bmpMiniatura=(Bitmap)partes[6];
-			item.recordatorio=(Recordatorio)partes[7];
+			item.titulo=(string)partes[0];
+			item.descripcion=(string)partes[1];
+			item.item=new FileInfo((string)partes[2]);
+			item.hash=(string)partes[3];
+			item.posicion=(int)partes[4];
+			item.bmpMiniatura=(Bitmap)partes[5];
+			item.recordatorio=(Recordatorio)partes[6];
 			
 			return item;
 		}

@@ -80,14 +80,8 @@
       <SubType>Code</SubType>
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Calendario.xaml.cs">
-      <DependentUpon>Calendario.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiaCalendario.xaml.cs">
-      <DependentUpon>DiaCalendario.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Calendario.cs" />
+    <Compile Include="Dia.cs" />
     <Compile Include="ItemCalendario.cs" />
     <Compile Include="Periodo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,8 +93,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Calendario.xaml" />
-    <Page Include="DiaCalendario.xaml" />
     <Page Include="Window1.xaml" />
   </ItemGroup>
   <ItemGroup>

@@ -30,12 +30,19 @@ namespace SimpleCalendar
 				lstPeriodos.AddRange(periodos);
 		}
 
+		public bool EstaDentro(DateTime fechaRecordatorio)
+		{
+			bool estaDentro=false;
+			for(int i=0;i<lstPeriodos.Count&&!estaDentro;i++)
+				estaDentro=lstPeriodos[i].EstaDentro(fechaRecordatorio);
+			return estaDentro;
+		}
 		#region implemented abstract members of ElementoBinario
 
 		public override byte[] GetBytes(object obj)
 		{
 			Recordatorio recordatorioASerializar=(Recordatorio)obj;
-			return Recordatorio.Formato.GetBytes(lstPeriodos);
+			return Recordatorio.Formato.GetBytes(recordatorioASerializar.lstPeriodos);
 		}
 
 		public override object GetObject(System.IO.MemoryStream bytes)

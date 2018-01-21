@@ -69,12 +69,16 @@ namespace SimpleCalendar
 			}
 		}
 
+		public bool EstaDentro(DateTime fecha)
+		{
+			return Inicio<=fecha&&fecha<=Fin;
+		}
 		#region implemented abstract members of ElementoBinario
 
 		public override byte[] GetBytes(object obj)
 		{
 			Periodo peridodoASerializar=(Periodo)obj;
-			return Periodo.Formato.GetBytes(new object[]{Inicio,TiempoPeriodo,AñoFinRecordatorio});
+			return Periodo.Formato.GetBytes(new object[]{peridodoASerializar.Inicio,peridodoASerializar.TiempoPeriodo,peridodoASerializar.AñoFinRecordatorio});
 		}
 
 		public override object GetObject(System.IO.MemoryStream bytes)
