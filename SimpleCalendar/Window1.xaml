@@ -6,7 +6,7 @@
 	WindowStyle="SingleBorderWindow"
 	BorderThickness="10,0,10,0"
 	BorderBrush="White"
-	Width="666"
+	Width="667"
 	Height="692">
-<local:Calendario/>
+<local:CalendarioViewer/>
 </Window>

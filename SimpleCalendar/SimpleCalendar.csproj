@@ -81,7 +81,15 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Calendario.cs" />
+    <Compile Include="CalendarioViewer.xaml.cs">
+      <DependentUpon>CalendarioViewer.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Dia.cs" />
+    <Compile Include="DiaViewer.xaml.cs">
+      <DependentUpon>DiaViewer.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ItemCalendario.cs" />
     <Compile Include="Periodo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -93,6 +101,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CalendarioViewer.xaml" />
+    <Page Include="DiaViewer.xaml" />
     <Page Include="Window1.xaml" />
   </ItemGroup>
   <ItemGroup>

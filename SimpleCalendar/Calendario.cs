@@ -29,6 +29,13 @@ namespace SimpleCalendar
 		{
 			diasConItems=new LlistaOrdenada<Dia>();
 		}
+
+		public LlistaOrdenada<Dia> DiasConItems {
+			get {
+				return diasConItems;
+			}
+		}
+
 		public IList<Dia> GetDias(int mes)
 		{
 			List<Dia> dias=new List<Dia>();
@@ -42,6 +49,7 @@ namespace SimpleCalendar
 			return dias;
 					
 		}
+		
 		public void CambioFechaItem(ItemCalendario item,DateTime antiguaFecha,DateTime nuevaFecha)
 		{
 			if(item==null)

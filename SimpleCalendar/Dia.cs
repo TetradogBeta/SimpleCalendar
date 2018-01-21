@@ -107,6 +107,13 @@ namespace SimpleCalendar
 		}
 		#endregion
 		#endregion
+		public static IList<ItemCalendario> GetRecordatorios(LlistaOrdenada<Dia> dias,DateTime fechaRecordatorio)
+		{
+			List<ItemCalendario> recordatoriosFecha=new List<ItemCalendario>();
+			for(int i=0;i<dias.Count;i++)
+				recordatoriosFecha.AddRange(dias.GetValueAt(i).GetRecordatorios(fechaRecordatorio));
+			return recordatoriosFecha;
+		}
 		public static IList<ItemCalendario> GetRecordatorios(IList<Dia> dias,DateTime fechaRecordatorio)
 		{
 			List<ItemCalendario> recordatoriosFecha=new List<ItemCalendario>();
@@ -114,5 +121,6 @@ namespace SimpleCalendar
 				recordatoriosFecha.AddRange(dias[i].GetRecordatorios(fechaRecordatorio));
 			return recordatoriosFecha;
 		}
+		
 	}
 }
