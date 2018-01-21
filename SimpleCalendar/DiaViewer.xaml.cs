@@ -69,7 +69,7 @@ namespace SimpleCalendar
 				
 				temporizador.Interval=TIMEIMGANIMACION;
 				PonImagen();
-				posAnimacion++;
+				posAnimacion=(posAnimacion+1)%GetTotalItems();
 			}
 		}
 		void PonImagen()
@@ -82,12 +82,25 @@ namespace SimpleCalendar
 			Dispatcher.BeginInvoke(act);
 			
 		}
+	
 
 		ItemCalendario GetItem(int posAnimacion)
 		{
 			//tener en cuenta los recordatorios!!
 			ItemCalendario item=null;
-			
+			for(int i=0;i<dias.Count&&item==null;i++)
+			{
+				if((posAnimacion-dias[i].Items.Count)>=0){
+					posAnimacion-=dias[i].Items.Count;
+					if(posAnimacion==0)
+						item=dias[i].Items[0];
+				}
+				else item=dias[i].Items[posAnimacion];
+			}
+			if(item==null)
+			{
+				item=recordatorios[posAnimacion];
+			}
 			return item;
 		}
 		public void Clear()
@@ -113,6 +126,49 @@ namespace SimpleCalendar
 		{
 			if(ItemsAñadidos!=null)
 				ItemsAñadidos(this,new ItemsEventArgs(Fecha, (string[])e.Data.GetData(DataFormats.FileDrop)));
+		}
+		void Grid_MouseEnter(object sender, MouseEventArgs e)
+		{
+			tempAnimacion.StopAndAbort();
+		}
+		void Grid_MouseLeave(object sender, MouseEventArgs e)
+		{
+			tempAnimacion.Start();
+		}
+
+		int GetTotalItems()
+		{
+			int total=0;
+			for(int i=0;i<dias.Count;i++)
+				total+=dias[i].Items.Count;
+			total+=recordatorios.Count;
+			return total;
+		}
+		public void StartAnimation()
+		{
+			tempAnimacion.StopAndAbort();
+			posAnimacion=0;
+			tempAnimacion.Start();
+		}
+		void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
+		{
+	
+			const int WHEEL=120;
+			int total=GetTotalItems();
+			posAnimacion+=e.Delta/WHEEL;
+			
+			if(posAnimacion<0)
+				posAnimacion=total-1;
+			else if(posAnimacion>=total)
+				posAnimacion=0;
+			
+			PonImagen();
+		}
+		void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			try{
+			GetItem(posAnimacion).Item.Abrir();
+			}catch{}
 		}
 	}
 	public class ItemsEventArgs:EventArgs

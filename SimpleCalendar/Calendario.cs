@@ -75,17 +75,17 @@ namespace SimpleCalendar
 		{
 			if(item==null)
 				throw new ArgumentNullException();
-			
-			if(diasConItems.ContainsKey(fecha))
-				diasConItems.GetValue(fecha).Items.Remove(item);
+			Dia aux=new Dia(fecha);
+			if(diasConItems.ContainsKey(aux))
+				diasConItems.GetValue(aux).Items.Remove(item);
 		}
 		public void AñadirItem(ItemCalendario item,DateTime fecha)
 		{
 			if(item==null)
 				throw new ArgumentNullException();
-			
-			if(!diasConItems.ContainsKey(fecha))
-				diasConItems.Add(new Dia(fecha));
+			Dia aux=new Dia(fecha);
+			if(!diasConItems.ContainsKey(aux))
+				diasConItems.Add(aux);
 			
 			diasConItems.GetValue(fecha).Items.Add(item);
 		}
@@ -100,10 +100,11 @@ namespace SimpleCalendar
 		public Dia AñadirItems(DateTime fecha,IList<string> pathItems)
 		{
 			Dia diaFecha;
-			if(!diasConItems.ContainsKey(fecha))
-				diasConItems.Add(new Dia(fecha));
+			Dia aux=new Dia(fecha);
+			if(!diasConItems.ContainsKey(aux))
+				diasConItems.Add(aux);
 			
-			diaFecha=diasConItems.GetValue(fecha);
+			diaFecha=diasConItems.GetValue(aux);
 			
 			for(int i=0;i<pathItems.Count;i++)
 			{

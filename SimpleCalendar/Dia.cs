@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using Gabriel.Cat;
 using Gabriel.Cat.Binaris;
+using Gabriel.Cat.Extension;
 
 namespace SimpleCalendar
 {
@@ -102,7 +103,7 @@ namespace SimpleCalendar
 		{
 			object[] partes=Dia.Formato.GetPartsOfObject(bytes);
 			Dia dia=new Dia((DateTime)partes[0]);
-			dia.Items.AddRange((IEnumerable<ItemCalendario>)partes[1]);
+			dia.Items.AddRange(((IEnumerable<object>)partes[1]).Casting<ItemCalendario>()); 
 			return dia;
 		}
 		#endregion

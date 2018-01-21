@@ -26,7 +26,7 @@ namespace SimpleCalendar
 		{
 			InitializeComponent();
 			wMain.ResizeMode=ResizeMode.CanMinimize|ResizeMode.NoResize;
-			this.Closing+=(s,e)=>cMain.Save(); 
+			this.Closed+=(s,e)=>cMain.Save(); 
 		}
 
 	

@@ -52,6 +52,7 @@ namespace SimpleCalendar
 					Dia diaAPoner=calendario.AñadirItems(e.Fecha,e.Items);
 					if(!d.Dias.Contains(diaAPoner))
 						d.Dias.Add(diaAPoner);
+					d.StartAnimation();
 				
 				};
 				ugDiasMes.Children.Add(dia);

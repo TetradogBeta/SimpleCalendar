@@ -47,7 +47,7 @@ namespace SimpleCalendar
 
 		public override object GetObject(System.IO.MemoryStream bytes)
 		{
-			return new Recordatorio(Recordatorio.Formato.GetPartsOfObject(bytes).Casting<Periodo>()); 
+			return new Recordatorio(((IEnumerable<object>)Recordatorio.Formato.GetPartsOfObject(bytes)[0]).Casting<Periodo>());
 		}
 
 		#endregion
