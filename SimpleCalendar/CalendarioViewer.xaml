@@ -8,10 +8,10 @@
 			<RowDefinition Height="10*"/>
 		</Grid.RowDefinitions>
 		<Viewbox>
-			<TextBlock x:Name="txtAñoActual"/>
+			<TextBlock x:Name="txtAñoActual" MouseWheel="TxtAñoActual_MouseWheel"/>
 		</Viewbox>
 		<Viewbox Grid.Row="1">
-			<TextBlock x:Name="txtMesActual" />
+			<TextBlock x:Name="txtMesActual" MouseWheel="TxtMesActual_MouseWheel" />
 		</Viewbox>
 		<UniformGrid x:Name="ugDiasMes" Grid.Row="2" Columns="7"/>
 	</Grid>

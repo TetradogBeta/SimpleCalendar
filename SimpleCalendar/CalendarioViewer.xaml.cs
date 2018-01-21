@@ -29,6 +29,7 @@ namespace SimpleCalendar
 		
 		public const int TOTALDIAS=6*7;//seis semanas muestro :)
 		Calendario calendario;
+		DateTime fechaVisualizada;
 		public CalendarioViewer()
 		{
 			DiaViewer dia;
@@ -63,6 +64,7 @@ namespace SimpleCalendar
 
 		public void PonFecha(DateTime fecha)
 		{
+			const int DOMINGO=7;
 			IList<Dia> dias;
 			DiaViewer dia;
 			DateTime mesAnterior=fecha.GetMesAnterior();
@@ -71,7 +73,9 @@ namespace SimpleCalendar
 			int diasMesSiguiente=mesSiguiente.GetDiaFinMes();
 			int diaAPoner;
 			int diasMesActual=fecha.GetDiaFinMes();
-			DayOfWeek diaInicio=fecha.GetDayOfWeekInicioMes();
+			int diaInicio=(int)fecha.GetDayOfWeekInicioMes();
+			if(diaInicio==0)
+				diaInicio=DOMINGO;
 			dias=calendario.GetDias(fecha.Month);
 			
 			//pongo el mes y el año a visualizar
@@ -81,29 +85,29 @@ namespace SimpleCalendar
 			
 			//pongo los dias y los recordatorios
 			
-			for(int i=0,f=(int)diaInicio-1,p;i<f;i++)
+			for(int i=0,f=diaInicio-1,p;i<f;i++)
 			{
 				p=f-i;
-				diaAPoner=diasMesAnterior-p;
-				dia=(ugDiasMes.Children[p] as DiaViewer);
+				diaAPoner=diasMesAnterior-p+1;
+				dia=(ugDiasMes.Children[i] as DiaViewer);
 				
 				dia.Clear();
 				dia.Dias.AddRange(calendario.DiasConItems.FiltraValues((d)=>d.Fecha.Month==mesAnterior.Month&&d.Fecha.Day==diaAPoner));
 				dia.Recordatorios.AddRange(Dia.GetRecordatorios(calendario.DiasConItems,new DateTime(mesAnterior.Year,mesAnterior.Month,diaAPoner)));
 				dia.PonFecha(diaAPoner,mesAnterior,false);
 			}
-			for(int i=(int)diaInicio-1,j=1,f=diasMesActual;j<=f;j++,i++)
+			for(int i=diaInicio-1,j=1,f=diasMesActual;j<=f;j++,i++)
 			{
 				
 				diaAPoner=j;
 				dia=(ugDiasMes.Children[i] as DiaViewer);
 				
 				dia.Clear();
-				dia.Dias.AddRange(dias.Filtra((d)=>d.Fecha.Month==mesAnterior.Month&&d.Fecha.Day==diaAPoner));
-				dia.Recordatorios.AddRange(Dia.GetRecordatorios(dias,new DateTime(mesAnterior.Year,mesAnterior.Month,diaAPoner)));
+				dia.Dias.AddRange(dias.Filtra((d)=>d.Fecha.Month==fecha.Month&&d.Fecha.Day==diaAPoner));
+				dia.Recordatorios.AddRange(Dia.GetRecordatorios(dias,new DateTime(fecha.Year,fecha.Month,diaAPoner)));
 				dia.PonFecha(diaAPoner,fecha);
 			}
-			for(int i=(int)diaInicio+diasMesActual-1,j=1;i<TOTALDIAS;i++,j++)
+			for(int i=diaInicio+diasMesActual-1,j=1;i<TOTALDIAS;i++,j++)
 			{
 				
 				diaAPoner=j;
@@ -114,6 +118,7 @@ namespace SimpleCalendar
 				dia.Recordatorios.AddRange(Dia.GetRecordatorios(dias,new DateTime(mesSiguiente.Year,mesSiguiente.Month,diaAPoner)));
 				dia.PonFecha(diaAPoner,mesSiguiente,false);
 			}
+			fechaVisualizada=fecha;
 		}
 
 		public void Save()
@@ -127,6 +132,30 @@ namespace SimpleCalendar
 			
 			if(System.IO.File.Exists(PathBackUp))
 				System.IO.File.Delete(PathBackUp);
+		}
+		void TxtAñoActual_MouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			TimeSpan año=new TimeSpan(365,4,0,0);
+	       //muevo los años
+	       if(e.Delta<0)
+	       {
+	       	PonFecha(fechaVisualizada-año);
+	       }
+	       else{
+	       	PonFecha(fechaVisualizada+año);
+	       }
+		}
+		void TxtMesActual_MouseWheel(object sender, MouseWheelEventArgs e)
+		{
+
+	       //muevo los años
+	       if(e.Delta<0)
+	       {
+	       	PonFecha(fechaVisualizada.GetMesAnterior());
+	       }
+	       else{
+	       	PonFecha(fechaVisualizada.GetMesSiguiente());
+	       }
 		}
 	}
 }

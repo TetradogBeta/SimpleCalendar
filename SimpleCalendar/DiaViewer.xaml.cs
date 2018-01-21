@@ -25,7 +25,7 @@ namespace SimpleCalendar
 	/// </summary>
 	public partial class DiaViewer : UserControl
 	{
-		public const int TIMEIMGANIMACION=1500;
+		public const int TIMEIMGANIMACION=2500;
 		public const int TIEMPOSINMIRAR=5*1000;
 		DateTime fecha;
 		Llista<Dia> dias;
@@ -41,6 +41,7 @@ namespace SimpleCalendar
 			recordatorios=new Llista<ItemCalendario>();
 			tempAnimacion=new Temporizador(TIMEIMGANIMACION);
 			posAnimacion=0;
+			tempAnimacion.Interval=TIEMPOSINMIRAR;
 			tempAnimacion.Elapsed+=PonImagen;
 		}
 
@@ -70,6 +71,7 @@ namespace SimpleCalendar
 				temporizador.Interval=TIMEIMGANIMACION;
 				PonImagen();
 				posAnimacion=(posAnimacion+1)%GetTotalItems();
+				System.Threading.Thread.Sleep(TIMEIMGANIMACION);
 			}
 		}
 		void PonImagen()
@@ -129,11 +131,13 @@ namespace SimpleCalendar
 		}
 		void Grid_MouseEnter(object sender, MouseEventArgs e)
 		{
-			tempAnimacion.StopAndAbort();
+			if(dias.Count!=0||recordatorios.Count!=0)
+				tempAnimacion.StopAndAbort();
 		}
 		void Grid_MouseLeave(object sender, MouseEventArgs e)
 		{
-			tempAnimacion.Start();
+			if(dias.Count!=0||recordatorios.Count!=0)
+				tempAnimacion.Start();
 		}
 
 		int GetTotalItems()
@@ -157,7 +161,10 @@ namespace SimpleCalendar
 		{
 			
 			const int WHEEL=120;
-			int total=GetTotalItems();
+			int total;
+			if(dias.Count!=0||recordatorios.Count!=0){
+			
+			total=GetTotalItems();
 			posAnimacion+=e.Delta/WHEEL;
 			
 			if(posAnimacion<0)
@@ -166,6 +173,7 @@ namespace SimpleCalendar
 				posAnimacion=0;
 			
 			PonImagen();
+			}
 		}
 		void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
