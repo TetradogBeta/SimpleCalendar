@@ -31,7 +31,7 @@ namespace SimpleCalendar
 		Calendario calendario;
 		public CalendarioViewer()
 		{
-		
+			DiaViewer dia;
 			InitializeComponent();
 			
 			
@@ -41,12 +41,21 @@ namespace SimpleCalendar
 			}
 			
 			if(System.IO.File.Exists(PathCalendario))
-				calendario=new Calendario().GetObject(System.IO.File.ReadAllBytes(PathCalendario)) as Calendario; 
+				calendario=new Calendario().GetObject(System.IO.File.ReadAllBytes(PathCalendario)) as Calendario;
 			else calendario=new Calendario();
 			
 			//pongo los dias;
-			for(int i=0;i<TOTALDIAS;i++)
-				ugDiasMes.Children.Add(new DiaViewer());
+			for(int i=0;i<TOTALDIAS;i++){
+				dia=new DiaViewer();
+				dia.ItemsAñadidos+=(s,e)=>{
+					DiaViewer d=(s as DiaViewer);
+					Dia diaAPoner=calendario.AñadirItems(e.Fecha,e.Items);
+					if(!d.Dias.Contains(diaAPoner))
+						d.Dias.Add(diaAPoner);
+				
+				};
+				ugDiasMes.Children.Add(dia);
+			}
 			
 			PonFecha(DateTime.Now);
 		}
@@ -64,10 +73,12 @@ namespace SimpleCalendar
 			DayOfWeek diaInicio=fecha.GetDayOfWeekInicioMes();
 			dias=calendario.GetDias(fecha.Month);
 			
+			//pongo el mes y el año a visualizar
 			txtAñoActual.Text=fecha.Year+"";
 			txtMesActual.Text=fecha.NombreMes();
 			txtMesActual.Text=char.ToUpper(txtMesActual.Text[0])+txtMesActual.Text.Substring(1);
 			
+			//pongo los dias y los recordatorios
 			
 			for(int i=0,f=(int)diaInicio-1,p;i<f;i++)
 			{
@@ -78,39 +89,40 @@ namespace SimpleCalendar
 				dia.Clear();
 				dia.Dias.AddRange(calendario.DiasConItems.FiltraValues((d)=>d.Fecha.Month==mesAnterior.Month&&d.Fecha.Day==diaAPoner));
 				dia.Recordatorios.AddRange(Dia.GetRecordatorios(calendario.DiasConItems,new DateTime(mesAnterior.Year,mesAnterior.Month,diaAPoner)));
-				dia.PonFecha(diaAPoner,false);
+				dia.PonFecha(diaAPoner,mesAnterior,false);
 			}
-			for(int i=(int)diaInicio-1,j=1,f=diasMesActual,p;j<=f;j++,i++)
+			for(int i=(int)diaInicio-1,j=1,f=diasMesActual;j<=f;j++,i++)
 			{
-			
+				
 				diaAPoner=j;
 				dia=(ugDiasMes.Children[i] as DiaViewer);
 				
 				dia.Clear();
 				dia.Dias.AddRange(dias.Filtra((d)=>d.Fecha.Month==mesAnterior.Month&&d.Fecha.Day==diaAPoner));
-				dia.Recordatorios.AddRange(Dia.GetRecordatorios(dias,new DateTime(mesAnterior.Year,mesAnterior.Month,diaAPoner)));  
-				dia.PonFecha(diaAPoner);
+				dia.Recordatorios.AddRange(Dia.GetRecordatorios(dias,new DateTime(mesAnterior.Year,mesAnterior.Month,diaAPoner)));
+				dia.PonFecha(diaAPoner,fecha);
 			}
 			for(int i=(int)diaInicio+diasMesActual-1,j=1;i<TOTALDIAS;i++,j++)
 			{
-			
+				
 				diaAPoner=j;
 				dia=(ugDiasMes.Children[i] as DiaViewer);
 				
 				dia.Clear();
 				dia.Dias.AddRange(dias.Filtra((d)=>d.Fecha.Month==mesSiguiente.Month&&d.Fecha.Day==diaAPoner));
-				dia.Recordatorios.AddRange(Dia.GetRecordatorios(dias,new DateTime(mesSiguiente.Year,mesSiguiente.Month,diaAPoner)));  
-				dia.PonFecha(diaAPoner,false);
+				dia.Recordatorios.AddRange(Dia.GetRecordatorios(dias,new DateTime(mesSiguiente.Year,mesSiguiente.Month,diaAPoner)));
+				dia.PonFecha(diaAPoner,mesSiguiente,false);
 			}
 		}
 
 		public void Save()
 		{
-		
+			
+			
 			if(System.IO.File.Exists(PathCalendario))
 				System.IO.File.Move(PathCalendario,PathBackUp);
-			
-			System.IO.File.WriteAllBytes(PathCalendario,calendario.GetBytes(calendario));
+			if(calendario.DiasConItems.Count>0)
+				System.IO.File.WriteAllBytes(PathCalendario,calendario.GetBytes(calendario));
 			
 			if(System.IO.File.Exists(PathBackUp))
 				System.IO.File.Delete(PathBackUp);

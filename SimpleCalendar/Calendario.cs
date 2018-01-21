@@ -23,7 +23,7 @@ namespace SimpleCalendar
 		static Calendario()
 		{
 			Formato=new Formato();
-			Formato.ElementosArchivo.Add(new ElementoIEnumerableBinario(new Dia())); 
+			Formato.ElementosArchivo.Add(new ElementoIEnumerableBinario(new Dia()));
 		}
 		public Calendario()
 		{
@@ -36,6 +36,7 @@ namespace SimpleCalendar
 			}
 		}
 
+		
 		public IList<Dia> GetDias(int mes)
 		{
 			List<Dia> dias=new List<Dia>();
@@ -47,7 +48,7 @@ namespace SimpleCalendar
 					dias.Add(aux);
 			}
 			return dias;
-					
+			
 		}
 		
 		public void CambioFechaItem(ItemCalendario item,DateTime antiguaFecha,DateTime nuevaFecha)
@@ -66,7 +67,7 @@ namespace SimpleCalendar
 			else diasConItems.Add(fechaNueva);
 			
 			fechaNueva.Items.Add(item);
-		
+			
 			
 		}
 
@@ -96,7 +97,20 @@ namespace SimpleCalendar
 			for(int i=0;i<items.Count;i++)
 				AñadirItem(items[i],fecha);
 		}
-
+		public Dia AñadirItems(DateTime fecha,IList<string> pathItems)
+		{
+			Dia diaFecha;
+			if(!diasConItems.ContainsKey(fecha))
+				diasConItems.Add(new Dia(fecha));
+			
+			diaFecha=diasConItems.GetValue(fecha);
+			
+			for(int i=0;i<pathItems.Count;i++)
+			{
+				diaFecha.Items.Add(new ItemCalendario(new System.IO.FileInfo(pathItems[i])));
+			}
+			return diaFecha;
+		}
 		#region implemented abstract members of ElementoBinario
 
 		public override byte[] GetBytes(object obj)

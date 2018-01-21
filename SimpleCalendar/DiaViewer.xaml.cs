@@ -16,6 +16,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Gabriel.Cat;
+using Gabriel.Cat.Extension;
 
 namespace SimpleCalendar
 {
@@ -24,15 +25,30 @@ namespace SimpleCalendar
 	/// </summary>
 	public partial class DiaViewer : UserControl
 	{
+		public const int TIMEIMGANIMACION=1500;
+		public const int TIEMPOSINMIRAR=5*1000;
+		DateTime fecha;
 		Llista<Dia> dias;
 		Llista<ItemCalendario> recordatorios;
+		Temporizador tempAnimacion;
+		int posAnimacion;
+		
+		public event EventHandler<ItemsEventArgs> ItemsAñadidos;
 		public DiaViewer()
 		{
 			InitializeComponent();
 			dias=new Llista<Dia>();
 			recordatorios=new Llista<ItemCalendario>();
+			tempAnimacion=new Temporizador(TIMEIMGANIMACION);
+			posAnimacion=0;
+			tempAnimacion.Elapsed+=PonImagen;
 		}
 
+		public DateTime Fecha {
+			get {
+				return fecha;
+			}
+		}
 		public Llista<Dia> Dias {
 			get {
 				return dias;
@@ -44,17 +60,85 @@ namespace SimpleCalendar
 				return recordatorios;
 			}
 		}
+
+		void PonImagen(Temporizador temporizador)
+		{
+			if(dias.Count==0&&recordatorios.Count==0)
+				temporizador.Interval=TIEMPOSINMIRAR;
+			else {
+				
+				temporizador.Interval=TIMEIMGANIMACION;
+				PonImagen();
+				posAnimacion++;
+			}
+		}
+		void PonImagen()
+		{
+			Action act=()=>{
+				ImageBrush img=new ImageBrush(GetItem(posAnimacion).Miniatura.ToImage().Source);
+				Background=img;
+			};
+			
+			Dispatcher.BeginInvoke(act);
+			
+		}
+
+		ItemCalendario GetItem(int posAnimacion)
+		{
+			//tener en cuenta los recordatorios!!
+			ItemCalendario item=null;
+			
+			return item;
+		}
 		public void Clear()
 		{
 			dias.Clear();
 			recordatorios.Clear();
+			//paro la animacion
+			tempAnimacion.StopAndAbort();
 		}
-		public void PonFecha(int dia,bool esMesActual=true)
+		public void PonFecha(int dia,DateTime fechaMesAño,bool esMesActual=true)
 		{
-			txtDia.Text=dia+"";
+			this.fecha=new DateTime(fechaMesAño.Year,fechaMesAño.Month,dia);
+			
+			txtDia.Text=this.fecha.Day+"";
+			
 			if(esMesActual)
 				txtDia.Foreground=Brushes.Black;
 			else txtDia.Foreground=Brushes.Gray;
+			//pongo la animacion
+			tempAnimacion.Start();
+		}
+		void Grid_Drop(object sender, DragEventArgs e)
+		{
+			if(ItemsAñadidos!=null)
+				ItemsAñadidos(this,new ItemsEventArgs(Fecha, (string[])e.Data.GetData(DataFormats.FileDrop)));
 		}
 	}
+	public class ItemsEventArgs:EventArgs
+	{
+		DateTime fecha;
+		IList<string> items;
+		public ItemsEventArgs(DateTime fecha,IList<string> items)
+		{
+			Fecha=fecha;
+			Items=items;
+		}
+		public DateTime Fecha {
+			get {
+				return fecha;
+			}
+			private set{fecha=value;}
+		}
+
+		public IList<string> Items {
+			get {
+				return items;
+			}
+			private set {
+				items = value;
+			}
+		}
+	}
+		
 }

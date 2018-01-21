@@ -8,5 +8,5 @@
 	BorderBrush="White"
 	Width="667"
 	Height="692">
-<local:CalendarioViewer/>
+<local:CalendarioViewer x:Name="cMain" />
 </Window>

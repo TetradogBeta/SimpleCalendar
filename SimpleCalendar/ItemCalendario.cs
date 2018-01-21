@@ -27,6 +27,7 @@ namespace SimpleCalendar
 		int posicion;
 		Bitmap bmpMiniatura;
 		Recordatorio recordatorio;
+		DateTime fechaMiniatura;
 		
 		static ItemCalendario()
 		{
@@ -39,6 +40,7 @@ namespace SimpleCalendar
 			Formato.ElementosArchivo.Add(ElementoBinario.ElementosTipoAceptado(Gabriel.Cat.Serializar.TiposAceptados.Int));
 			Formato.ElementosArchivo.Add(ElementoBinario.ElementosTipoAceptado(Gabriel.Cat.Serializar.TiposAceptados.Bitmap));
 			Formato.ElementosArchivo.Add(new Recordatorio());
+			Formato.ElementosArchivo.Add(ElementoBinario.ElementosTipoAceptado(Gabriel.Cat.Serializar.TiposAceptados.DateTime));
 		}
 		public ItemCalendario(FileInfo file)
 		{
@@ -99,9 +101,15 @@ namespace SimpleCalendar
 		{
 			get{
 
-				if(bmpMiniatura==null)
-					bmpMiniatura=item.Miniatura();
+				if(fechaMiniatura<Item.LastWriteTime)
+				{
+					bmpMiniatura=null;
+				}
 				
+				if(bmpMiniatura==null){
+					bmpMiniatura=item.Miniatura();
+					fechaMiniatura=DateTime.Now;
+				}
 				return bmpMiniatura;
 				
 			}
@@ -147,7 +155,7 @@ namespace SimpleCalendar
 		public override byte[] GetBytes(object obj)
 		{
 			ItemCalendario itemCalendario=(ItemCalendario)obj;
-			return ItemCalendario.Formato.GetBytes(new object[]{itemCalendario.Titulo,itemCalendario.Descripcion,itemCalendario.Item.FullName,itemCalendario.Hash,itemCalendario.Posicion,itemCalendario.Miniatura,itemCalendario.Recordatorio});
+			return ItemCalendario.Formato.GetBytes(new object[]{itemCalendario.Titulo,itemCalendario.Descripcion,itemCalendario.Item.FullName,itemCalendario.Hash,itemCalendario.Posicion,itemCalendario.Miniatura,itemCalendario.Recordatorio,itemCalendario.fechaMiniatura});
 			
 		}
 
@@ -162,6 +170,7 @@ namespace SimpleCalendar
 			item.posicion=(int)partes[4];
 			item.bmpMiniatura=(Bitmap)partes[5];
 			item.recordatorio=(Recordatorio)partes[6];
+			item.fechaMiniatura=(DateTime)partes[7];
 			
 			return item;
 		}
