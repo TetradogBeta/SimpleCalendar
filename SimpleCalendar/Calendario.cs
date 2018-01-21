@@ -114,8 +114,9 @@ namespace SimpleCalendar
 		}
 		#region implemented abstract members of ElementoBinario
 
-		public override byte[] GetBytes(object obj)
+		public override byte[] GetBytes(object obj=null)
 		{
+			if(obj==null)obj=this;
 			Calendario calendario=(Calendario)obj;
 			return Calendario.Formato.GetBytes(calendario.diasConItems.Values);
 		}

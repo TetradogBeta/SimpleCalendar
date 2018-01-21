@@ -82,7 +82,7 @@ namespace SimpleCalendar
 			Dispatcher.BeginInvoke(act);
 			
 		}
-	
+		
 
 		ItemCalendario GetItem(int posAnimacion)
 		{
@@ -146,13 +146,16 @@ namespace SimpleCalendar
 		}
 		public void StartAnimation()
 		{
-			tempAnimacion.StopAndAbort();
-			posAnimacion=0;
-			tempAnimacion.Start();
+			try{
+				tempAnimacion.StopAndAbort();
+				posAnimacion=0;
+				tempAnimacion.Start();
+				PonImagen();
+			}catch{}
 		}
 		void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
-	
+			
 			const int WHEEL=120;
 			int total=GetTotalItems();
 			posAnimacion+=e.Delta/WHEEL;
@@ -167,7 +170,7 @@ namespace SimpleCalendar
 		void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
 			try{
-			GetItem(posAnimacion).Item.Abrir();
+				GetItem(posAnimacion).Item.Abrir();
 			}catch{}
 		}
 	}
@@ -196,5 +199,5 @@ namespace SimpleCalendar
 			}
 		}
 	}
-		
+	
 }

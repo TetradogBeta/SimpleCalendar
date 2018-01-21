@@ -123,7 +123,7 @@ namespace SimpleCalendar
 			if(System.IO.File.Exists(PathCalendario))
 				System.IO.File.Move(PathCalendario,PathBackUp);
 			if(calendario.DiasConItems.Count>0)
-				System.IO.File.WriteAllBytes(PathCalendario,calendario.GetBytes(calendario));
+				System.IO.File.WriteAllBytes(PathCalendario,calendario.GetBytes());
 			
 			if(System.IO.File.Exists(PathBackUp))
 				System.IO.File.Delete(PathBackUp);
