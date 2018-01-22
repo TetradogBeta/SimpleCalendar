@@ -48,6 +48,7 @@ namespace SimpleCalendar
 			//pongo los dias;
 			for(int i=0;i<TOTALDIAS;i++){
 				dia=new DiaViewer();
+				dia.DameDia+=(item)=>calendario.GetDiaItem(item);
 				dia.ItemsAñadidos+=(s,e)=>{
 					DiaViewer d=(s as DiaViewer);
 					Dia diaAPoner=calendario.AñadirItems(e.Fecha,e.Items);
@@ -76,7 +77,7 @@ namespace SimpleCalendar
 			int diaInicio=(int)fecha.GetDayOfWeekInicioMes();
 			if(diaInicio==0)
 				diaInicio=DOMINGO;
-			dias=calendario.GetDias(fecha.Month);
+			dias=calendario.GetDias(fecha.Month,fecha.Year);
 			
 			//pongo el mes y el año a visualizar
 			txtAñoActual.Text=fecha.Year+"";

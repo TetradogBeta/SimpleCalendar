@@ -1,9 +1,9 @@
 ﻿<UserControl x:Class="SimpleCalendar.DiaViewer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Grid Drop="Grid_Drop" AllowDrop="True" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" MouseWheel="Grid_MouseWheel" MouseLeftButtonUp="Grid_MouseLeftButtonUp" >
-		<Viewbox>
-			<TextBlock x:Name="txtDia" HorizontalAlignment="Center" />
+	<Grid Drop="Grid_Drop" AllowDrop="True" MouseWheel="Grid_MouseWheel" MouseLeftButtonUp="Grid_MouseLeftButtonUp" >
+		<Viewbox >
+			<TextBlock x:Name="txtDia" HorizontalAlignment="Center"  MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" />
 		</Viewbox>
 	</Grid>
 </UserControl>

@@ -37,14 +37,14 @@ namespace SimpleCalendar
 		}
 
 		
-		public IList<Dia> GetDias(int mes)
+		public IList<Dia> GetDias(int mes,int año)
 		{
 			List<Dia> dias=new List<Dia>();
 			Dia aux;
 			for(int i=0;i<diasConItems.Count;i++){
 				aux=diasConItems.GetValueAt(i);
 				
-				if(aux.Fecha.Month==mes)
+				if(aux.Fecha.Month==mes&&aux.Fecha.Year<=año)
 					dias.Add(aux);
 			}
 			return dias;
@@ -71,6 +71,14 @@ namespace SimpleCalendar
 			
 		}
 
+		public Dia GetDiaItem(ItemCalendario item)
+		{
+			Dia diaItem=null;
+			for(int i=0;i<diasConItems.Count&&diaItem==null;i++)
+				if(diasConItems.GetValueAt(i).Items.Contains(item))
+					diaItem=diasConItems.GetValueAt(i);
+			return diaItem;
+		}
 		public void EliminarItem(ItemCalendario item,DateTime fecha)
 		{
 			if(item==null)
