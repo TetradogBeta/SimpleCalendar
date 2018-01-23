@@ -10,15 +10,16 @@ using System.Drawing;
 using System.IO;
 using Gabriel.Cat.Binaris;
 using Gabriel.Cat.Extension;
+using Gabriel.Cat;
 namespace SimpleCalendar
 {
 	/// <summary>
 	/// Description of ItemCalendario.
 	/// </summary>
-	public class ItemCalendario:ElementoBinario,IComparable,IComparable<ItemCalendario>
+	public class ItemCalendario:ElementoBinario,IComparable,IComparable<ItemCalendario>,Gabriel.Cat.IClauUnicaPerObjecte
 	{
 		public static readonly Formato Formato;
-
+		public static GeneradorInt genId;
 		
 		string titulo;
 		string descripcion;
@@ -29,6 +30,7 @@ namespace SimpleCalendar
 		Recordatorio recordatorio;
 		DateTime fechaMiniatura;
 		
+		int id;
 		static ItemCalendario()
 		{
 			Formato=new Formato();
@@ -41,11 +43,16 @@ namespace SimpleCalendar
 			Formato.ElementosArchivo.Add(ElementoBinario.ElementosTipoAceptado(Gabriel.Cat.Serializar.TiposAceptados.Bitmap));
 			Formato.ElementosArchivo.Add(new Recordatorio());
 			Formato.ElementosArchivo.Add(ElementoBinario.ElementosTipoAceptado(Gabriel.Cat.Serializar.TiposAceptados.DateTime));
+			
+			genId=new GeneradorInt();
+			
+			
 		}
 		public ItemCalendario(FileInfo file)
 		{
 			Item=file;
 			recordatorio=new Recordatorio();
+			id=genId.Siguiente();
 		}
 		internal ItemCalendario()
 		{}
@@ -120,7 +127,13 @@ namespace SimpleCalendar
 				return recordatorio;
 			}
 		}
-
+		#region IClauUnicaPerObjecte implementation
+		public IComparable Clau {
+			get {
+				return id;
+			}
+		}
+		#endregion
 		#region IComparable implementation
 
 		public int CompareTo(object obj)
@@ -147,6 +160,7 @@ namespace SimpleCalendar
 			
 			return compareTo;
 		}
+
 
 		#endregion
 

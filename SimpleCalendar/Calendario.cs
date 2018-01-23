@@ -73,10 +73,15 @@ namespace SimpleCalendar
 
 		public Dia GetDiaItem(ItemCalendario item)
 		{
+			if(item==null)
+				throw new ArgumentNullException();
+			
 			Dia diaItem=null;
+			
 			for(int i=0;i<diasConItems.Count&&diaItem==null;i++)
 				if(diasConItems.GetValueAt(i).Items.Contains(item))
 					diaItem=diasConItems.GetValueAt(i);
+			
 			return diaItem;
 		}
 		public void EliminarItem(ItemCalendario item,DateTime fecha)
