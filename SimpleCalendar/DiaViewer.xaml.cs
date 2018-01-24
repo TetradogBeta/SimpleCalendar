@@ -53,13 +53,17 @@ namespace SimpleCalendar
 		{
 			InitializeComponent();
 			dias=new Llista<Dia>();
+			dias.Added+=PonDescripcionYAnimacion;
+			dias.Removed+=QuitarDescripcionYAnimacion;
 			recordatorios=new Llista<ItemCalendario>();
+			recordatorios.Added+=(s,e)=>PonDescripcionYAnimacion();
+			recordatorios.Removed+=(s,e)=>QuitarDescripcionYAnimacion();
 			tempAnimacion=new Temporizador(TIMEIMGANIMACION);
 			posAnimacion=0;
 			tempAnimacion.Interval=TIEMPOSINMIRAR;
 			tempAnimacion.Elapsed+=PonImagen;
 			mouseHover=false;
-			ToolTip=new Descripcion(this);
+			
 		}
 
 		public DateTime Fecha {
@@ -79,6 +83,23 @@ namespace SimpleCalendar
 			}
 		}
 
+		void QuitarDescripcionYAnimacion(object sender=null, ListEventArgs<Dia> e=null)
+		{
+			if(dias.Count==0&&recordatorios.Count==0&&ToolTip!=null)
+			{
+				ToolTip=null;
+				tempAnimacion.StopAndAbort();
+			}
+		}
+		void PonDescripcionYAnimacion(object sender=null, ListEventArgs<Dia> e=null)
+		{
+			if(dias.Count>0||recordatorios.Count>0){
+				if(ToolTip==null)
+					ToolTip=new Descripcion(this);
+				if(!tempAnimacion.EstaOn)
+					tempAnimacion.Stop();
+			}
+		}
 		void PonImagen(Temporizador temporizador)
 		{
 			if(dias.Count==0&&recordatorios.Count==0)
@@ -90,8 +111,8 @@ namespace SimpleCalendar
 				posAnimacion=(posAnimacion+1)%GetTotalItems();
 				System.Threading.Thread.Sleep(TIMEIMGANIMACION);
 				while(mouseHover)
-				System.Threading.Thread.Sleep(TIEMPOESPERAHOVER);
-	
+					System.Threading.Thread.Sleep(TIEMPOESPERAHOVER);
+				
 			}
 		}
 		void PonImagen()
@@ -99,11 +120,11 @@ namespace SimpleCalendar
 			Action act=()=>{
 				ImageBrush img=new ImageBrush(GetItem(posAnimacion).Miniatura.ToImage().Source);
 				Background=img;
-									
+				
 			};
 			
 			Dispatcher.BeginInvoke(act);
-				
+			
 		}
 		
 
@@ -183,16 +204,16 @@ namespace SimpleCalendar
 			const int WHEEL=120;
 			int total;
 			if(dias.Count!=0||recordatorios.Count!=0){
-			
-			total=GetTotalItems();
-			posAnimacion+=e.Delta/WHEEL;
-			
-			if(posAnimacion<0)
-				posAnimacion=total-1;
-			else if(posAnimacion>=total)
-				posAnimacion=0;
-			
-			PonImagen();
+				
+				total=GetTotalItems();
+				posAnimacion+=e.Delta/WHEEL;
+				
+				if(posAnimacion<0)
+					posAnimacion=total-1;
+				else if(posAnimacion>=total)
+					posAnimacion=0;
+				
+				PonImagen();
 			}
 		}
 		void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
