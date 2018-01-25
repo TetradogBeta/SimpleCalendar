@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Gabriel.Cat;
 using Gabriel.Cat.Extension;
+using Microsoft.Win32;
 
 namespace SimpleCalendar
 {
@@ -49,6 +50,7 @@ namespace SimpleCalendar
 		bool mouseHover;
 		public event DameDiaEvent DameDia;
 		public event EventHandler<ItemsEventArgs> ItemsAñadidos;
+		public event EventHandler<RemoveItemEventArgs> ItemEliminado;
 		public DiaViewer()
 		{
 			InitializeComponent();
@@ -83,6 +85,10 @@ namespace SimpleCalendar
 			}
 		}
 
+		public void EliminarRecordatorios(IList<ItemCalendario> items)
+		{
+			recordatorios.RemoveRange(items);
+		}
 		void QuitarDescripcionYAnimacion(object sender=null, ListEventArgs<Dia> e=null)
 		{
 			if(dias.Count==0&&recordatorios.Count==0&&ToolTip!=null)
@@ -102,13 +108,16 @@ namespace SimpleCalendar
 		}
 		void PonImagen(Temporizador temporizador)
 		{
+			int itemsActuales;
 			if(dias.Count==0&&recordatorios.Count==0)
 				temporizador.Interval=TIEMPOSINMIRAR;
 			else {
 				
 				temporizador.Interval=TIMEIMGANIMACION;
 				PonImagen();
-				posAnimacion=(posAnimacion+1)%GetTotalItems();
+				itemsActuales=GetTotalItems();
+				if(itemsActuales>0)
+					posAnimacion=(posAnimacion+1)%itemsActuales;
 				System.Threading.Thread.Sleep(TIMEIMGANIMACION);
 				while(mouseHover)
 					System.Threading.Thread.Sleep(TIEMPOESPERAHOVER);
@@ -118,8 +127,12 @@ namespace SimpleCalendar
 		void PonImagen()
 		{
 			Action act=()=>{
-				ImageBrush img=new ImageBrush(GetItem(posAnimacion).Miniatura.ToImage().Source);
-				Background=img;
+				ImageBrush img;
+				
+				try{
+					img=new ImageBrush(GetItem(posAnimacion).Miniatura.ToImage().Source);
+					Background=img;
+				}catch{}
 				
 			};
 			
@@ -218,9 +231,57 @@ namespace SimpleCalendar
 		}
 		void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			try{
-				GetItem(posAnimacion).Item.Abrir();
-			}catch{}
+			OpenFileDialog opnFiles;
+			if(Keyboard.Modifiers==ModifierKeys.Control)
+			{
+				opnFiles=new OpenFileDialog();
+				opnFiles.Multiselect=true;
+				if(opnFiles.ShowDialog().GetValueOrDefault())
+				{
+					if(ItemsAñadidos!=null)
+						ItemsAñadidos(this,new ItemsEventArgs(Fecha,opnFiles.FileNames));
+				}
+			}
+			else{
+				try{
+					GetItem(posAnimacion).Item.Abrir();
+				}catch{}
+			}
+		}
+		void Grid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			Action act;
+			int itemsActuales;
+			if(Keyboard.Modifiers==ModifierKeys.Control)
+			{
+				itemsActuales=GetTotalItems();
+				//elimino el elemento actual
+				if(itemsActuales>0)
+				{
+					if(ItemEliminado!=null)
+						ItemEliminado(this,new RemoveItemEventArgs(Fecha,GetItem(posAnimacion)));
+					itemsActuales--;
+					tempAnimacion.StopAndAbort();
+					
+					if(itemsActuales>0){
+						
+						PonImagen();
+						tempAnimacion.Start();
+					}else{
+						
+						act=()=>{
+							Background=Brushes.Transparent;
+							ToolTip=null;
+						};
+						
+						Dispatcher.BeginInvoke(act);
+						
+						
+					}
+				}
+				
+				
+			}
 		}
 		private  string TooltTipDespcripcion()
 		{
@@ -233,19 +294,43 @@ namespace SimpleCalendar
 					diaItem=DameDia(GetItem(posAnimacion));
 					fechaRelativa=new DateTime(Fecha.Year,diaItem.Fecha.Month,diaItem.Fecha.Day);
 					txt=(fechaRelativa-Fecha).TotalDays+"";
-					if(fechaRelativa<Fecha)
-						txt="Faltan "+txt;
-					else if(fechaRelativa>Fecha)
-						txt="Hace "+txt;
-					else if(diaItem.Fecha.Year==Fecha.Year)
-						txt="Hoy empieza";
+					if(fechaRelativa<Fecha){
+						if(Fecha.Year==DateTime.Now.Year)
+							txt="Faltan "+txt;
+						else txt="Faltarian "+txt;
+						
+					}
+					else if(fechaRelativa>Fecha){
+						if(Fecha.Year==DateTime.Now.Year)
+							txt="Hace "+txt;
+						else txt="Hará "+txt;
+					}
+					else if(diaItem.Fecha.Year==Fecha.Year){
+						if(Fecha.Year==DateTime.Now.Year)
+							txt="Hoy empieza";
+						else txt="Hoy empiezará";
+					}
 					else if(diaItem.Fecha.Year>Fecha.Year)
-						txt="Falta"+(diaItem.Fecha.Year-Fecha.Year>1?"n ":" ")+(diaItem.Fecha.Year-Fecha.Year)+" año"+(diaItem.Fecha.Year-Fecha.Year>1?"s.":"");
-					else txt="Hace "+(Fecha.Year-diaItem.Fecha.Year)+" año"+(Fecha.Year-diaItem.Fecha.Year>1?"s.":"");
+					{
+						if(Fecha.Year==DateTime.Now.Year)
+							txt="Falta";
+						else txt="Faltará";
+						
+						txt+=(diaItem.Fecha.Year-Fecha.Year>1?"n ":" ")+(diaItem.Fecha.Year-Fecha.Year)+" año"+(diaItem.Fecha.Year-Fecha.Year>1?"s":"");
+						
+					}else{
+
+						if(Fecha.Year==DateTime.Now.Year)
+							txt="Hace ";
+						else txt="Hará ";
+						
+						txt+=(Fecha.Year-diaItem.Fecha.Year)+" año"+(Fecha.Year-diaItem.Fecha.Year>1?"s":"");
+					}
 				}
 			}catch{}
 			return txt;
 		}
+		
 	}
 	public class ItemsEventArgs:EventArgs
 	{
@@ -272,5 +357,29 @@ namespace SimpleCalendar
 			}
 		}
 	}
-	
+	public class RemoveItemEventArgs:EventArgs
+	{
+		DateTime fecha;
+		IList<ItemCalendario> items;
+		public RemoveItemEventArgs(DateTime fecha,params ItemCalendario[] items)
+		{
+			Fecha=fecha;
+			Items=items;
+		}
+		public DateTime Fecha {
+			get {
+				return fecha;
+			}
+			private set{fecha=value;}
+		}
+
+		public IList<ItemCalendario> Items {
+			get {
+				return items;
+			}
+			private set {
+				items = value;
+			}
+		}
+	}
 }

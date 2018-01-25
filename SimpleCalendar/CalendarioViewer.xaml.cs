@@ -49,6 +49,14 @@ namespace SimpleCalendar
 			for(int i=0;i<TOTALDIAS;i++){
 				dia=new DiaViewer();
 				dia.DameDia+=(item)=>calendario.GetDiaItem(item);
+				dia.ItemEliminado+=(s,e)=>{
+					DiaViewer d=((DiaViewer)s);
+					for(int j=0;j<e.Items.Count;j++)
+						calendario.EliminarItem(e.Items[j],e.Fecha);
+					d.EliminarRecordatorios(e.Items); 
+					d.StartAnimation();
+				
+				};
 				dia.ItemsAñadidos+=(s,e)=>{
 					DiaViewer d=(s as DiaViewer);
 					Dia diaAPoner=calendario.AñadirItems(e.Fecha,e.Items);
