@@ -5,6 +5,7 @@
  * Licencia GNU v3
  */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -200,7 +201,7 @@ namespace SimpleCalendar
 		static ItemsCalendario()
 		{
 			Formato=new Formato();
-			Formato.ElementosArchivo.Add(new ElementoIEnumerableBinario(new ItemCalendario()));
+			Formato.ElementosArchivo.Add(new ElementoIListBinario(new ItemCalendario()));
 		}
 		public ItemsCalendario()
 		{
@@ -225,7 +226,7 @@ namespace SimpleCalendar
 		{
 			object[] partes=ItemsCalendario.Formato.GetPartsOfObject(bytes);
 			ItemsCalendario items=new ItemsCalendario();
-			items.Items.AddRange(partes.Casting<ItemCalendario>());
+			items.Items.AddRange(new List<ItemCalendario>((IList)partes[0]));
 			return items;
 		}
 

@@ -5,6 +5,7 @@
  * Licencia GNU v3
  */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Gabriel.Cat.Binaris;
 using Gabriel.Cat.Extension;
@@ -21,7 +22,7 @@ namespace SimpleCalendar
 		static Recordatorio()
 		{
 			Formato=new Formato();
-			Formato.ElementosArchivo.Add(new ElementoIEnumerableBinario(new Periodo(),ElementoIEnumerableBinario.LongitudBinaria.Byte));
+			Formato.ElementosArchivo.Add(new ElementoIListBinario(new Periodo(),ElementoIListBinario.LongitudBinaria.Byte));
 		}
 		public Recordatorio(IEnumerable<Periodo> periodos=null)
 		{
@@ -47,7 +48,7 @@ namespace SimpleCalendar
 
 		public override object GetObject(System.IO.MemoryStream bytes)
 		{
-			return new Recordatorio(((IEnumerable<object>)Recordatorio.Formato.GetPartsOfObject(bytes)[0]).Casting<Periodo>());
+			return new Recordatorio(new List<Periodo>(((IList)Recordatorio.Formato.GetPartsOfObject(bytes)[0])));
 		}
 
 		#endregion
