@@ -1,8 +1,10 @@
 ﻿/*
  * Creado por SharpDevelop.
- * Usuario: tetradog
- * Fecha: 01/01/2018
- * Licencia GNU v3
+ * Usuario: pc
+ * Fecha: 04/02/2018
+ * Hora: 12:17
+ * 
+ * Para cambiar esta plantilla use Herramientas | Opciones | Codificación | Editar Encabezados Estándar
  */
 using System;
 using System.Collections.Generic;
@@ -13,9 +15,8 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using Microsoft.Win32;
 
-namespace SimpleCalendar
+namespace CalendarioSimple
 {
 	/// <summary>
 	/// Interaction logic for Window1.xaml
@@ -25,10 +26,6 @@ namespace SimpleCalendar
 		public Window1()
 		{
 			InitializeComponent();
-			wMain.ResizeMode=ResizeMode.CanMinimize|ResizeMode.NoResize;
-			this.Closed+=(s,e)=>cMain.Save(); 
 		}
-
-	
 	}
 }

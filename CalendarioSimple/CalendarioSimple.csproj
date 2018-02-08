@@ -1,21 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
-    <ProjectGuid>{CE16DA54-E452-40A2-AEF7-770493A1645E}</ProjectGuid>
+    <ProjectGuid>{FD09B3BE-011F-4851-9406-218B13148913}</ProjectGuid>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SimpleCalendar</RootNamespace>
-    <AssemblyName>SimpleCalendar</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>CalendarioSimple</RootNamespace>
+    <AssemblyName>CalendarioSimple</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>True</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -35,13 +32,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Gabriel.Cat.Binaris">
-      <HintPath>..\..\Gabriel.Cat.Binaris\bin\Release\Gabriel.Cat.Binaris.dll</HintPath>
+      <HintPath>..\..\..\..\MisProgramas\Gabriel.Cat.Binaris\bin\Release\Gabriel.Cat.Binaris.dll</HintPath>
     </Reference>
     <Reference Include="Gabriel.Cat.Utilitats">
-      <HintPath>..\..\Gabriel.Cat.Utilitats\Gabriel.Cat.Utilitats\bin\Release\Gabriel.Cat.Utilitats.dll</HintPath>
+      <HintPath>..\..\..\..\MisProgramas\Gabriel.Cat.Utilitats\Gabriel.Cat.Utilitats\bin\Release\Gabriel.Cat.Utilitats.dll</HintPath>
     </Reference>
     <Reference Include="Gabriel.Cat.Wpf">
-      <HintPath>..\..\Gabriel.Cat.Wpf\Gabriel.Cat.Wpf\bin\Release\Gabriel.Cat.Wpf.dll</HintPath>
+      <HintPath>..\..\..\..\MisProgramas\Gabriel.Cat.Wpf\Gabriel.Cat.Wpf\bin\Release\Gabriel.Cat.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -60,9 +57,7 @@
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Drawing">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -82,33 +77,27 @@
       <SubType>Code</SubType>
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Calendario.cs" />
-    <Compile Include="CalendarioViewer.xaml.cs">
-      <DependentUpon>CalendarioViewer.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Dia.cs" />
-    <Compile Include="DiaViewer.xaml.cs">
-      <DependentUpon>DiaViewer.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ItemCalendario.cs" />
-    <Compile Include="Periodo.cs" />
+    <Compile Include="Calendario\AnimacionDia.cs" />
+    <Compile Include="Calendario\Calendario.cs" />
+    <Compile Include="Calendario\DiaCalendario.cs" />
+    <Compile Include="Calendario\ItemDia.cs" />
+    <Compile Include="Calendario\Periodo.cs" />
+    <Compile Include="Calendario\Recordatorio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\WPFAssemblyInfo.cs" />
-    <Compile Include="Recordatorio.cs" />
     <Compile Include="Window1.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="CalendarioViewer.xaml" />
-    <Page Include="DiaViewer.xaml" />
     <Page Include="Window1.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Calendario" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

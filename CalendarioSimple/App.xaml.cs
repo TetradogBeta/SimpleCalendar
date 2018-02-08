@@ -4,7 +4,7 @@ using System.Data;
 using System.Xml;
 using System.Configuration;
 
-namespace SimpleCalendar
+namespace CalendarioSimple
 {
 	/// <summary>
 	/// Interaction logic for App.xaml
