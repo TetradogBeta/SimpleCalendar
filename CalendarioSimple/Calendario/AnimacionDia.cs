@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Gabriel.Cat.Extension;
 
-namespace CalendarioSimple.Calendario
+namespace CalendarioSimple
 {
 	/// <summary>
 	/// Description of AnimacionDia.
@@ -25,22 +25,26 @@ namespace CalendarioSimple.Calendario
 		int posRecordatorio;
 		bool mostrarRecordatorios;
 		IList<ItemDia> recordatorios;
-		
+		ItemDia itemActual;
 		Temporizador temporizadorAnimacion;
 		
 		
 		public event EventHandler<AnimacionEventArgs> NuevoFotograma;
-		
-		public AnimacionDia(DiaCalendario dia,int año)
+
+		public AnimacionDia()
 		{
-			this.dia=dia;
 			Posicion=0;
-			Año=año;
+			itemActual=null;
 			temporizadorAnimacion=new Temporizador();
 			temporizadorAnimacion.Interval=INTERVALO;
 			temporizadorAnimacion.Elapsed+=ImagenNueva;
 			mostrarRecordatorios=false;
 			posRecordatorio=0;
+		}
+		public AnimacionDia(DiaCalendario dia,int año):this()
+		{
+			this.dia=dia;
+			Año=año;
 		}
 
 		public int Posicion {
@@ -49,6 +53,7 @@ namespace CalendarioSimple.Calendario
 			}
 			set {
 				posicion = value;
+				ImagenNueva();
 			}
 		}
 		public int Año {
@@ -66,46 +71,64 @@ namespace CalendarioSimple.Calendario
 			}
 			set{
 				dia=value;
+				itemActual=null;
+				IsEnabled=false;
+				posicion=0;
+				posRecordatorio=0;
 			}
 		}
 
+		public ItemDia ItemActual {
+			get {
+				return itemActual;
+			}
+		}
 		public IList<ItemDia> Recordatorios {
 			get {
 				return recordatorios;
 			}
 			set {
+				IsEnabled=false;
 				recordatorios = value;
+				itemActual=null;
+				posicion=0;
+				posRecordatorio=0;
 			}
 		}
 		public bool IsEnabled
 		{
 			get{return temporizadorAnimacion.EstaOn;}
 			set{
-				if(value)
+				if(value){
 					temporizadorAnimacion.Start();
-				else temporizadorAnimacion.Stop();
+				}
+				else temporizadorAnimacion.StopAndAbort();
 			}
 		}
-		void ImagenNueva(Temporizador temporizador)
+		void ImagenNueva(Temporizador temporizador=null)
 		{
-			ItemDia item;	
-			
-			if(posicion==int.MaxValue)
-				posicion=0;
+			int total;
+			if(Dia!=null&&año>0&&IsEnabled){
 
-			item=dia.GetAt(posicion++);
-			
-			if(item!=null&&NuevoFotograma!=null)
-				NuevoFotograma(this,new AnimacionEventArgs(item.Miniatura));
-
-			if(recordatorios!=null&&mostrarRecordatorios&&recordatorios.Count>0&&NuevoFotograma!=null)
-			{
-				System.Threading.Thread.Sleep(INTERVALO);
-				NuevoFotograma(this,new AnimacionEventArgs(recordatorios[posRecordatorio].Miniatura));
-				posRecordatorio=(posRecordatorio+1)%recordatorios.Count;
-				mostrarRecordatorios=!mostrarRecordatorios;
+				total=dia.GetTotal(Año);
+				if(total>0){
+					itemActual=dia.GetAt(posicion++,Año);
+					posicion=posicion%total;
+					if(itemActual!=null&&NuevoFotograma!=null)
+						NuevoFotograma(this,new AnimacionEventArgs(itemActual.Miniatura));
+				}
+				if(recordatorios!=null&&mostrarRecordatorios&&recordatorios.Count>0&&NuevoFotograma!=null)
+				{
+					System.Threading.Thread.Sleep(INTERVALO);
+					itemActual=recordatorios[posRecordatorio];
+					NuevoFotograma(this,new AnimacionEventArgs(itemActual.Miniatura));
+					posRecordatorio=(posRecordatorio+1)%recordatorios.Count;
+					mostrarRecordatorios=!mostrarRecordatorios;
+				}
 			}
 		}
+
+		
 	}
 	public class AnimacionEventArgs:EventArgs
 	{

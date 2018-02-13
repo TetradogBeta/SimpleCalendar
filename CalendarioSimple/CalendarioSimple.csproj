@@ -79,7 +79,15 @@
     </Compile>
     <Compile Include="Calendario\AnimacionDia.cs" />
     <Compile Include="Calendario\Calendario.cs" />
+    <Compile Include="Calendario\CalendarioViewer.xaml.cs">
+      <DependentUpon>CalendarioViewer.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Calendario\DiaCalendario.cs" />
+    <Compile Include="Calendario\DiaViewer.xaml.cs">
+      <DependentUpon>DiaViewer.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Calendario\ItemDia.cs" />
     <Compile Include="Calendario\Periodo.cs" />
     <Compile Include="Calendario\Recordatorio.cs" />
@@ -91,6 +99,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Calendario\CalendarioViewer.xaml" />
+    <Page Include="Calendario\DiaViewer.xaml" />
     <Page Include="Window1.xaml" />
   </ItemGroup>
   <ItemGroup>

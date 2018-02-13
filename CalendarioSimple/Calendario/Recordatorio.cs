@@ -11,7 +11,7 @@ using System.IO;
 using Gabriel.Cat.Binaris;
 using Gabriel.Cat.Extension;
 
-namespace CalendarioSimple.Calendario
+namespace CalendarioSimple
 {
 	/// <summary>
 	/// Description of Recordatorio.

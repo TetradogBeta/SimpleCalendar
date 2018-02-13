@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gabriel.Cat;
 using Gabriel.Cat.Binaris;
-namespace CalendarioSimple.Calendario
+namespace CalendarioSimple
 {
 	/// <summary>
 	/// Description of DiaCalendario.
@@ -153,23 +153,61 @@ namespace CalendarioSimple.Calendario
 				return this;
 			}
 		}
-		#endregion
-		public ItemDia GetAt(int posicion)
+
+		public void AddItems(int año,params string[] fileNames)
 		{
-			Llista<ItemDia> itemsAño;
+			Llista<ItemDia> itemsAño=this[año];
+			for(int i=0;i<fileNames.Length;i++)
+				itemsAño.Add(new ItemDia(fileNames[i]));
+		}
+
+		#endregion
+		public ItemDia GetAt(int posicion,int añoTope=short.MaxValue)
+		{
+			KeyValuePair<int,Llista<ItemDia>> itemsAño;
 			
 			ItemDia item=null;
 			for(int i=0;i<itemsPorAño.Count&&item==null;i++)
 			{
-				itemsAño=itemsPorAño.GetValueAt(i);
-				
-				if(posicion>itemsAño.Count)
-					posicion-=itemsAño.Count;
-				else item=itemsAño[posicion];
+				itemsAño=itemsPorAño[i];
+				if(itemsAño.Key<=añoTope){
+					if(posicion>=itemsAño.Value.Count){
+						posicion-=itemsAño.Value.Count;
+						if(posicion==0)
+							item=itemsAño.Value[0];
+					}
+					else item=itemsAño.Value[posicion];
+				}
 				
 			}
 			return item;
 		}
+
+		public int GetTotal(int año)
+		{;
+			int pos=0;
+			int total=0;
+			KeyValuePair<int,Llista<ItemDia>> añoAct;
+			while(pos<itemsPorAño.Count)
+			{
+				añoAct=itemsPorAño[pos];
+				if(añoAct.Key<=año)
+					total+=añoAct.Value.Count;
+				
+				
+				pos++;
+			}
+			return total;
+		}
+		public bool RemoveItem(ItemDia item)
+		{
+			bool encontrado=false;
+			for(int i=0;i<itemsPorAño.Count&&!encontrado;i++)
+				encontrado=itemsPorAño[i].Value.Remove(item);
+			return encontrado;
+			
+		}
+
 		public void RemoveAt(int posicion)
 		{
 			bool encontrado=false;

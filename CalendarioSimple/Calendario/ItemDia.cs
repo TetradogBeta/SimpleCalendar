@@ -14,7 +14,7 @@ using Gabriel.Cat.Extension;
 using Gabriel.Cat;
 using Gabriel.Cat.Binaris;
 
-namespace CalendarioSimple.Calendario
+namespace CalendarioSimple
 {
 	/// <summary>
 	/// Description of ItemDia.

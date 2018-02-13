@@ -7,7 +7,7 @@
 using System;
 using System.IO;
 using Gabriel.Cat.Binaris;
-namespace CalendarioSimple.Calendario
+namespace CalendarioSimple
 {
 	public class Periodo
 	{
@@ -63,7 +63,7 @@ namespace CalendarioSimple.Calendario
 		TimeSpan tiempoPeriodo;
 
 		DateTime añoFinRecordatorio;
-
+		DateTime? fin;
 
 		public Periodo()
 		{}
@@ -90,6 +90,7 @@ namespace CalendarioSimple.Calendario
 			}
 			set {
 				inicio = value;
+				fin=null;
 			}
 		}
 
@@ -99,12 +100,15 @@ namespace CalendarioSimple.Calendario
 			}
 			set {
 				tiempoPeriodo = value;
+				fin=null;
 			}
 		}
 
 		public DateTime Fin {
 			get {
-				return inicio + tiempoPeriodo;
+				if(!fin.HasValue)
+					fin=inicio + tiempoPeriodo;
+				return fin.Value;
 			}
 		}
 

@@ -26,6 +26,7 @@ namespace CalendarioSimple
 		public Window1()
 		{
 			InitializeComponent();
+			Closing+=(s,e)=>calendario.GuardarCalendario(); 
 		}
 	}
 }
