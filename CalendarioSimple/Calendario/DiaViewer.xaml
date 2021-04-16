@@ -1,5 +1,0 @@
-﻿<UserControl x:Class="CalendarioSimple.DiaViewer"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Image x:Name="imgDia" AllowDrop="True" Drop="ImgDia_Drop" MouseEnter="ImgDia_MouseEnter" MouseLeave="ImgDia_MouseLeave" MouseWheel="ImgDia_MouseWheel" MouseLeftButtonUp="ImgDia_MouseLeftButtonUp" MouseRightButtonUp="ImgDia_MouseRightButtonUp" />
-</UserControl>

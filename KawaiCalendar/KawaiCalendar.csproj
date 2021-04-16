@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Gabriel.Cat.S.Binaris" Version="1.1.5-Preview1.0" />
+    <PackageReference Include="Gabriel.Cat.S.Utilitats" Version="1.1.5.4" />
+    <PackageReference Include="Gabriel.Cat.S.Wpf" Version="1.0.1-preview1.0.0" />
+  </ItemGroup>
+
+</Project>
