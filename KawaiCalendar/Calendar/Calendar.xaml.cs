@@ -43,11 +43,11 @@ namespace KawaiCalendar.Calendar
             cambiando = false;
 
             date = DateTime.Now;
-            Data = new CalendarData();
+            DataBase = new CalendarData();
             for (int i = 0; i < DIAS.Length; i++)
             {
                 view = new Viewbox();
-                view.Child = new TextBlock { Text = DIAS[i] + "", Foreground=Brushes.Gray };
+                view.Child = new TextBlock { Text = DIAS[i] + "", Foreground = Brushes.Gray };
                 ugMes.Children.Add(view);
             }
             for (int i = 0; i < TOTALDAYS; i++)
@@ -58,6 +58,7 @@ namespace KawaiCalendar.Calendar
             cambioImgs = new Timer(CambioImagenes);
             cambioImgs.Change(CICLO, CICLO);
             CambioImagenes();
+            Date = Date;
 
         }
 
@@ -69,32 +70,35 @@ namespace KawaiCalendar.Calendar
             set
             {
                 DiaMes dia;
-                int dayOfWeek = (int)Data.FirstDayMonth.DayOfWeek - 1;
+                int dayOfWeek;
+
                 date = value;
-                Data.SetDate(date);
+                DataBase.SetDate(date);
+
+                dayOfWeek = (int)DataBase.FirstDayMonth.DayOfWeek - 1;
 
                 //pongo el dia
                 for (int i = 0; i < TOTALDAYS; i++)
                 {
-                    dia =ugMes.Children[i + DIASSEMANA] as DiaMes;
-                    dia.Date = Data.FirstDayMonth.AddDays(i - dayOfWeek);
+                    dia = ugMes.Children[i + DIASSEMANA] as DiaMes;
+                    dia.Date = DataBase.FirstDayMonth.AddDays(i - dayOfWeek);
                     dia.IsSelected = null;
                 }
-                for (int i = dayOfWeek,j=0 ; j < Data.DiasMes;j++, i++)
+                for (int i = dayOfWeek, j = 0; j < DataBase.DiasMes; j++, i++)
                 {
                     dia = ugMes.Children[i + DIASSEMANA] as DiaMes;
-                    dia.Date = Data.FirstDayMonth.AddDays(i - dayOfWeek);
+                    dia.Date = DataBase.FirstDayMonth.AddDays(i - dayOfWeek);
                     dia.IsSelected = false;
                 }
                 //selecciono el dia del mes
-                (ugMes.Children[DIASSEMANA + dayOfWeek+date.Day-1] as DiaMes).IsSelected=true;
+                (ugMes.Children[DIASSEMANA + dayOfWeek + date.Day - 1] as DiaMes).IsSelected = true;
 
                 CambioImagenes();
                 if (ChangeDate != null)
                     ChangeDate(this, new EventArgs());
             }
         }
-        public CalendarData Data { get; set; }
+        public CalendarData DataBase { get; set; }
 
         private void CambioImagenes(object state = null)
         {
@@ -102,8 +106,10 @@ namespace KawaiCalendar.Calendar
             int diaACambiar;
             DateTime dateAux;
             Action act;
-
+            List<int> posiciones = new List<int>(System.Linq.Enumerable.Range(0, TOTALDAYS));
             int cambios = MiRandom.Next(TOTALDAYS);
+
+
             if (!cambiando)
             {
                 cambiando = true;
@@ -111,9 +117,11 @@ namespace KawaiCalendar.Calendar
                 {
                     for (int i = 0; i < cambios; i++)
                     {
-                        diaACambiar = MiRandom.Next(TOTALDAYS);
+                        diaACambiar = posiciones[MiRandom.Next(posiciones.Count)];
+                        posiciones.Remove(diaACambiar);
+
                         dateAux = GetDate(diaACambiar);
-                        (ugMes.Children[diaACambiar + DIASSEMANA] as DiaMes).Item = GetRandom(dateAux.DayOfYear);
+                        (ugMes.Children[diaACambiar + DIASSEMANA] as DiaMes).Items = GetRandom(dateAux.DayOfYear);
                     }
                     cambiando = false;
                 };
@@ -124,25 +132,25 @@ namespace KawaiCalendar.Calendar
         private DateTime GetDate(int posMonth)
         {
 
-            posMonth -= (int)Data.FirstDayMonth.DayOfWeek -1;
-            return Data.FirstDayMonth.AddDays(posMonth);
+            posMonth -= (int)DataBase.FirstDayMonth.DayOfWeek - 1;
+            return DataBase.FirstDayMonth.AddDays(posMonth);
         }
 
-        private CalendarItem GetRandom(int dayOfYear)
+        private List<CalendarItem> GetRandom(int dayOfYear)
         {
-            CalendarItem item;
+            List<CalendarItem> items;
 
-            if (!Data.DayItems.ContainsKey(dayOfYear))
-                item = default;
-            else item = Data.DayItems[dayOfYear][MiRandom.Next(Data.DayItems[dayOfYear].Count)];
+            if (!DataBase.DayItems.ContainsKey(dayOfYear))
+                items = default;
+            else items = DataBase.DayItems[dayOfYear];
 
-            return item;
+            return items;
         }
         public void Add(DateTime date, params string[] items)
         {
-            if (!Data.DayItems.ContainsKey(date.DayOfYear))
-                Data.DayItems.Add(date.DayOfYear, new List<CalendarItem>());
-            Data.DayItems[date.DayOfYear].AddRange(items.Convert((i) => new CalendarItem { FilePic = i, Year = date.Year }));
+            if (!DataBase.DayItems.ContainsKey(date.DayOfYear))
+                DataBase.DayItems.Add(date.DayOfYear, new List<CalendarItem>());
+            DataBase.DayItems[date.DayOfYear].AddRange(items.Convert((i) => new CalendarItem { FilePic = i, Year = date.Year }));
         }
     }
     public class CalendarData : IElementoBinarioComplejo
@@ -151,7 +159,7 @@ namespace KawaiCalendar.Calendar
 
         public CalendarData()
         {
-           DateTime date = DateTime.Now;
+            DateTime date = DateTime.Now;
             FirstDayMonth = new DateTime(date.Year, date.Month, 1);
             DiasMes = FirstDayMonth.AddMonths(1).AddDays(-1).Day;
 
