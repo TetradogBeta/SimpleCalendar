@@ -126,6 +126,9 @@ namespace KawaiCalendar
 
         private void miMoveToDate_Click(object sender, RoutedEventArgs e)
         {
+            SelectorDeFecha selector = new SelectorDeFecha();
+            selector.ShowDialog();
+            calendar.Date = selector.Date.Value;
 
         }
 
