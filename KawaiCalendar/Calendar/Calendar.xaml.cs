@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Gabriel.Cat.S.Extension;
 using Gabriel.Cat.S.Utilitats;
 
@@ -71,6 +72,10 @@ namespace KawaiCalendar.Calendar
             else cambioImgs.Change(1000, 2000);
 
             Date = Date;
+            Task.Delay(150).ContinueWith(t=> {
+                CambioImagenes();
+            });
+
 
         }
 
@@ -126,8 +131,25 @@ namespace KawaiCalendar.Calendar
             int diaACambiar;
             DateTime dateAux;
             Action act;
-            List<int> posiciones = new List<int>(System.Linq.Enumerable.Range(0, TOTALDAYS));
-            int cambios = MiRandom.Next(TOTALDAYS);
+            List<int> posiciones=default;
+            int cambios;
+            DispatcherOperation dispatcher;
+            act = () =>
+            {
+                posiciones = new List<int>(ugMes.Children.ToArray().Filtra((d) =>
+                 {
+                     DiaMes dia = d as DiaMes;
+                     bool correcto = !Equals(dia, default);
+                     if (correcto)
+                         correcto =!Equals(dia.GetItems(),default) && dia.GetItems().Count > 0;
+                     return correcto;
+
+
+                 }).Convert((d) => ugMes.Children.IndexOf(d as UIElement)));
+            };
+            dispatcher=Dispatcher.BeginInvoke(act);
+            while (dispatcher.Status != DispatcherOperationStatus.Completed) Thread.Sleep(100);
+            cambios = MiRandom.Next(posiciones.Count);
 
 
             if (!cambiando)

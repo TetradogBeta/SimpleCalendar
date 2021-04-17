@@ -5,17 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:KawaiCalendar"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Height="250">
+             d:DesignHeight="450" d:DesignWidth="800" Height="325"  >
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition x:Name="rowYear" Height="75"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Viewbox>
             <TextBlock x:Name="tbYear"/>
         </Viewbox>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" >
-            <UniformGrid x:Name="ugItemsYear" Columns="4" Rows="3"/>
-        </ScrollViewer>
+
+        <UniformGrid x:Name="ugItemsYear" Columns="5" Grid.Row="1" />
+
     </Grid>
 </UserControl>
