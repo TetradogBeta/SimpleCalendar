@@ -23,6 +23,7 @@ namespace KawaiCalendar
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const string VERSION = "KawaiCalendar V1.3b";
         Uri ulrGithub = new Uri("https://github.com/TetradogBeta/SimpleCalendar");
         string DataBasePath = "database.bin";
         public MainWindow()
@@ -151,12 +152,18 @@ namespace KawaiCalendar
 
         private void calendar_ChangeDate(object sender = null, EventArgs e = null)
         {
-            Title = $"{calendar.Date.ToString("MMMM").ToUpper()} de {calendar.Date.Year}";
+            Title = $"{VERSION}  {calendar.Date.ToString("MMMM").ToUpper()} de {calendar.Date.Year}";
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             Action act=default;
+            int multiplicador = 1;
+            //if (e.Key.HasFlag(Key.LeftCtrl) || e.Key.HasFlag(Key.RightCtrl))
+            //    multiplicador = 3;
+            //if(e.Key.HasFlag(Key.RightAlt))
+            //    multiplicador *= 2;
+
             switch (e.Key)
             {
                 case Key.F12:
@@ -167,19 +174,19 @@ namespace KawaiCalendar
                     break;
                 case Key.Left:
                 case Key.NumPad4:
-                    act = () => calendar.Date = calendar.Date.AddMonths(-1);
+                    act = () => calendar.Date = calendar.Date.AddMonths(-1* multiplicador);
                     break;
                 case Key.Up:
                 case Key.NumPad8:
-                    act = () => calendar.Date = calendar.Date.AddYears(1);
+                    act = () => calendar.Date = calendar.Date.AddYears(1 * multiplicador);
                     break;
                 case Key.Right:
                 case Key.NumPad6:
-                    act = () => calendar.Date = calendar.Date.AddMonths(1);
+                    act = () => calendar.Date = calendar.Date.AddMonths(1 * multiplicador);
                     break;
                 case Key.Down:
                 case Key.NumPad2:
-                    act = () => calendar.Date = calendar.Date.AddYears(-1);
+                    act = () => calendar.Date = calendar.Date.AddYears(-1 * multiplicador);
                     break;
                 case Key.F5:
                     act = () => calendar.Date = DateTime.Now;

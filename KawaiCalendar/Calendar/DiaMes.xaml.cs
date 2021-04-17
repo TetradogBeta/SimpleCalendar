@@ -68,7 +68,7 @@ namespace KawaiCalendar.Calendar
         public async Task NextPic()
         {
             Action act;
-            string path;
+            CalendarItem item;
             int ticketId;
             bool encontrado = false;
 
@@ -97,7 +97,7 @@ namespace KawaiCalendar.Calendar
                        if (!Equals(GetItems(), default))
                            for (int i = 0; i < GetItems().Count && !encontrado && Equals(ticketId, TicketIdActual); i++)
                            {
-                               encontrado = GetItems()[pos % GetItems().Count].Year <= Date.Year && File.Exists(GetItems()[pos % GetItems().Count].FilePic);
+                               encontrado = GetItems()[pos % GetItems().Count].Year <= Date.Year && !Equals(GetItems()[pos % GetItems().Count].Img,default);
                                if (!encontrado) pos++;
                                if (pos == int.MaxValue)
                                    pos = 0;
@@ -106,9 +106,9 @@ namespace KawaiCalendar.Calendar
                        {
                            if (encontrado)
                            {
-                               path = GetItems()[pos % GetItems().Count].FilePic;
-                               imgDia.SetImage(new Bitmap(path));
-                               Tag = path;
+                               item = GetItems()[pos % GetItems().Count];
+                               imgDia.SetImage(item.Img);
+                               Tag = item;
                            }
                            else
                            {
@@ -195,20 +195,33 @@ namespace KawaiCalendar.Calendar
             if (!Equals(Tag, default))
             {
                 file = new FileInfo(Tag + "");
+                if (file.Exists)
+                {
+                    process = file.Abrir();
+                    process.WaitForExit();
+                    if (process.ExitCode == ERROR)
+                    {
+                        manager = new Notifications.Wpf.Core.NotificationManager();
+                        manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
+                        {
+                            Title = "Bug ageno al programa",
+                            Message = $"Hay un problema al abrir el archivo '{file.Name}',no te preocupes al archivo no le pasa nada,te abro la carpeta contenedora",
+                            Type = Notifications.Wpf.Core.NotificationType.Error,
 
-                process = file.Abrir();
-                process.WaitForExit();
-                if (process.ExitCode == ERROR)
+                        });
+                        file.Directory.Abrir();
+                    }
+                }
+                else
                 {
                     manager = new Notifications.Wpf.Core.NotificationManager();
                     manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
                     {
-                        Title = "Bug ageno al programa",
-                        Message = $"Hay un problema al abrir el archivo '{file.Name}',no te preocupes al archivo no le pasa nada,te abro la carpeta contenedora",
-                        Type = Notifications.Wpf.Core.NotificationType.Error,
+                        Title = "Archivo no encontrado",
+                        Message = $"'{(Tag as CalendarItem).FileName}'",
+                        Type = Notifications.Wpf.Core.NotificationType.Information,
 
                     });
-                    file.Directory.Abrir();
                 }
 
             }

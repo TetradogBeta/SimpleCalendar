@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -56,7 +57,7 @@ namespace KawaiCalendar.Calendar
             for (int i = 0; i < DIAS.Length; i++)
             {
                 view = new Viewbox();
-                view.Child = new TextBlock { Text = DIAS[i] + "", Foreground = Brushes.Gray };
+                view.Child = new TextBlock { Text = DIAS[i] + "", Foreground = System.Windows.Media.Brushes.Gray };
                 ugMes.Children.Add(view);
             }
             for (int i = 0; i < TOTALDAYS; i++)
@@ -87,7 +88,7 @@ namespace KawaiCalendar.Calendar
                 date = value;
                 DataBase.SetDate(date);
 
-                dayOfWeek = (int)DataBase.FirstDayMonth.DayOfWeek-1;
+                dayOfWeek = (int)DataBase.FirstDayMonth.DayOfWeek - 1;
                 if (dayOfWeek < 0)
                     dayOfWeek = 6;//domingo
                 dayOfYear = DataBase.FirstDayMonth.DayOfYear;
@@ -99,7 +100,7 @@ namespace KawaiCalendar.Calendar
                     if (hasChanges)
                     {
                         dia.SetItems(GetList(dia.Date.DayOfYear));
-                        if(!Equals(dia.Tag,default))
+                        if (!Equals(dia.Tag, default))
                             dia.NextPic();
                     }
                     dia.IsSelected = null;
@@ -111,7 +112,7 @@ namespace KawaiCalendar.Calendar
                     dia.IsSelected = false;
                 }
                 //selecciono el dia del mes
-                (ugMes.Children[DIASSEMANA + dayOfWeek + date.Day -1] as DiaMes).IsSelected = true;
+                (ugMes.Children[DIASSEMANA + dayOfWeek + date.Day - 1] as DiaMes).IsSelected = true;
 
                 if (ChangeDate != null)
                     ChangeDate(this, new EventArgs());
@@ -213,13 +214,74 @@ namespace KawaiCalendar.Calendar
             DiasMes = FirstDayMonth.AddMonths(1).AddDays(-1).Day;
         }
     }
-    public class CalendarItem : IElementoBinarioComplejo, IComparable, IComparable<CalendarItem>
+    public class CalendarItem : IElementoBinarioComplejo,ISaveAndLoad, IComparable, IComparable<CalendarItem>
     {
-        public static ElementoBinario Serializador = ElementoBinario.GetSerializador<CalendarItem>();
+        public const string EXTENSION = ".jpeg";
+        public static readonly System.Drawing.Imaging.ImageFormat Formato = System.Drawing.Imaging.ImageFormat.Jpeg;
 
+        public static ElementoBinario Serializador = ElementoBinario.GetSerializador<CalendarItem>();
+        public static string Directory;
+        private Bitmap img;
+
+        static CalendarItem()
+        {
+            Directory = new DirectoryInfo("Thumbnails").FullName;
+            if (!System.IO.Directory.Exists(Directory))
+                System.IO.Directory.CreateDirectory(Directory);
+        }
 
         public int Year { get; set; }
         public string FilePic { get; set; }
+        public string FileName => System.IO.Path.GetFileName(FilePic);
+
+        public string Hash { get; set; }
+        public string IdRapido { get; set; }
+        [IgnoreSerialitzer]
+        public Bitmap Img
+        {
+            get
+            {
+                Bitmap bmp;
+                string path;
+                int proporcion;
+    
+
+                if (Equals(img, default))
+                {
+                    if (Equals(Hash, default))
+                    {
+                        bmp = new Bitmap(FilePic);
+
+                        Hash = bmp.GetBytes().Hash();
+                        IdRapido = new FileInfo(FilePic).IdUnicoRapido();
+
+                        if (bmp.Width < bmp.Height)
+                            proporcion = bmp.Height/ bmp.Width;
+                        else proporcion = bmp.Width/ bmp.Height;
+
+                        img = bmp.Escala(proporcion);
+                        img.Save(System.IO.Path.Combine(Directory, IdRapido + EXTENSION),Formato);
+                    }
+                    else
+                    {
+                        path = System.IO.Path.Combine(Directory, IdRapido + EXTENSION);
+                        if (File.Exists(path))
+                        {
+                            img = new Bitmap(path);
+                        }else if (File.Exists(FilePic))
+                        {
+                            Hash = default;
+                            img = Img;
+                        }
+                    }
+                }
+                return img;
+            }
+            set
+            {
+                img = value;
+            }
+        }
 
         ElementoBinario IElementoBinarioComplejo.Serialitzer => Serializador;
 
@@ -235,6 +297,19 @@ namespace KawaiCalendar.Calendar
                 compareTo = Year.CompareTo(other.Year);
             return compareTo;
         }
+        public override string ToString()
+        {
+            return FilePic;
+        }
 
+        void ISaveAndLoad.Load()
+        {
+
+        }
+
+        void ISaveAndLoad.Save()
+        {
+            Img = Img;
+        }
     }
 }

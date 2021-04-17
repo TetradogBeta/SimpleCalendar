@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" MouseRightButtonDown="UserControl_MouseRightButtonDown">
     <Grid>
-        <Image x:Name="imgDia"/>
+        <Image x:Name="imgDia" Stretch="UniformToFill"/>
         <Viewbox>
             <TextBlock x:Name="tbDia"/>
         </Viewbox>
