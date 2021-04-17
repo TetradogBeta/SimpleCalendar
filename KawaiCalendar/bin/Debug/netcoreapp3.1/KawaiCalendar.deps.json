@@ -1,0 +1,144 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "KawaiCalendar/1.0.0": {
+        "dependencies": {
+          "Gabriel.Cat.S.Binaris": "1.1.5-Preview1.0",
+          "Gabriel.Cat.S.Utilitats": "1.1.5.4",
+          "Gabriel.Cat.S.Wpf": "1.0.1-preview1.0.0"
+        },
+        "runtime": {
+          "KawaiCalendar.dll": {}
+        }
+      },
+      "Gabriel.Cat.S.Binaris/1.1.5-Preview1.0": {
+        "dependencies": {
+          "Gabriel.Cat.S.Seguretat": "1.0.2.2-Preview1.0.8",
+          "Gabriel.Cat.S.Utilitats": "1.1.5.4",
+          "System.Drawing.Common": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Gabriel.Cat.S.Binaris.dll": {
+            "assemblyVersion": "1.0.0.1",
+            "fileVersion": "1.0.0.1"
+          }
+        }
+      },
+      "Gabriel.Cat.S.Seguretat/1.0.2.2-Preview1.0.8": {
+        "dependencies": {
+          "Gabriel.Cat.S.Utilitats": "1.1.5.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Gabriel.Cat.S.Seguretat.dll": {
+            "assemblyVersion": "1.0.2.2",
+            "fileVersion": "1.0.2.2"
+          }
+        }
+      },
+      "Gabriel.Cat.S.Utilitats/1.1.5.4": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "System.Drawing.Common": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Gabriel.Cat.S.Utilitats.dll": {
+            "assemblyVersion": "1.0.4.4",
+            "fileVersion": "1.0.4.4"
+          }
+        }
+      },
+      "Gabriel.Cat.S.Wpf/1.0.1-preview1.0.0": {
+        "dependencies": {
+          "Gabriel.Cat.S.Utilitats": "1.1.5.4"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Gabriel.Cat.S.Wpf.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
+          }
+        }
+      },
+      "Microsoft.CSharp/4.7.0": {},
+      "Microsoft.NETCore.Platforms/3.1.0": {},
+      "Microsoft.Win32.SystemEvents/4.7.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "3.1.0"
+        }
+      },
+      "System.Drawing.Common/4.7.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "3.1.0",
+          "Microsoft.Win32.SystemEvents": "4.7.0"
+        }
+      }
+    }
+  },
+  "libraries": {
+    "KawaiCalendar/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Gabriel.Cat.S.Binaris/1.1.5-Preview1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iFT2DmDXNezpcvo/da5pDMfn+0+b2HoIFzdjRwdzjdpWItocA8gB6n01XiylYMZdNsjfGltvt6CdWf9kXW2weg==",
+      "path": "gabriel.cat.s.binaris/1.1.5-preview1.0",
+      "hashPath": "gabriel.cat.s.binaris.1.1.5-preview1.0.nupkg.sha512"
+    },
+    "Gabriel.Cat.S.Seguretat/1.0.2.2-Preview1.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uKHAnqLdvDZKLNm4yr7hkQb+MyLm1M2ZIJhOAhLHDjp1cmShDzqtzlVRmM0Wjh9COFOmhgzQuiL4/EBAg/Di4Q==",
+      "path": "gabriel.cat.s.seguretat/1.0.2.2-preview1.0.8",
+      "hashPath": "gabriel.cat.s.seguretat.1.0.2.2-preview1.0.8.nupkg.sha512"
+    },
+    "Gabriel.Cat.S.Utilitats/1.1.5.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cTEwfH++oL/goVHmlZNUaZe30e7V47UEmylBu5/m2id3c5vlJ3St751lbYctQIc2Be4jVQ7lPQsYvnYGNCwwrg==",
+      "path": "gabriel.cat.s.utilitats/1.1.5.4",
+      "hashPath": "gabriel.cat.s.utilitats.1.1.5.4.nupkg.sha512"
+    },
+    "Gabriel.Cat.S.Wpf/1.0.1-preview1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pTdcog04prZ8dfUriSj8XDWYmlNwitEU47NQodSnS8nwzGCz/rebcxc+MIfjtz5kj4Bhxeb8YkV9A7sy0swtBA==",
+      "path": "gabriel.cat.s.wpf/1.0.1-preview1.0.0",
+      "hashPath": "gabriel.cat.s.wpf.1.0.1-preview1.0.0.nupkg.sha512"
+    },
+    "Microsoft.CSharp/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA==",
+      "path": "microsoft.csharp/4.7.0",
+      "hashPath": "microsoft.csharp.4.7.0.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/3.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-z7aeg8oHln2CuNulfhiLYxCVMPEwBl3rzicjvIX+4sUuCwvXw5oXQEtbiU2c0z4qYL5L3Kmx0mMA/+t/SbY67w==",
+      "path": "microsoft.netcore.platforms/3.1.0",
+      "hashPath": "microsoft.netcore.platforms.3.1.0.nupkg.sha512"
+    },
+    "Microsoft.Win32.SystemEvents/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mtVirZr++rq+XCDITMUdnETD59XoeMxSpLRIII7JRI6Yj0LEDiO1pPn0ktlnIj12Ix8bfvQqQDMMIF9wC98oCA==",
+      "path": "microsoft.win32.systemevents/4.7.0",
+      "hashPath": "microsoft.win32.systemevents.4.7.0.nupkg.sha512"
+    },
+    "System.Drawing.Common/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-v+XbyYHaZjDfn0ENmJEV1VYLgGgCTx1gnfOBcppowbpOAriglYgGCvFCPr2EEZyBvXlpxbEsTwkOlInl107ahA==",
+      "path": "system.drawing.common/4.7.0",
+      "hashPath": "system.drawing.common.4.7.0.nupkg.sha512"
+    }
+  }
+}

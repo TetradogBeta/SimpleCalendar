@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,12 +27,14 @@ namespace KawaiCalendar.Calendar
 
 
         const int DIASSEMANA = 7;
-        const int TOTALDAYS = DIASSEMANA * 6;
+        public const int TOTALDAYS = DIASSEMANA * 6;
         const int CICLO = TOTALDAYS * 1000;//cada 42 segundos porque mola :D vale no xD
+        public static CalendarData DataBase { get; set; }
 
         bool cambiando;
         DateTime date;
         Timer cambioImgs;
+
 
         public event EventHandler ChangeDate;
         public Calendar()
@@ -43,7 +46,10 @@ namespace KawaiCalendar.Calendar
             cambiando = false;
 
             date = DateTime.Now;
-            DataBase = new CalendarData();
+
+            if(Equals(DataBase,default))
+                DataBase = new CalendarData();
+
             for (int i = 0; i < DIAS.Length; i++)
             {
                 view = new Viewbox();
@@ -56,8 +62,10 @@ namespace KawaiCalendar.Calendar
             }
 
             cambioImgs = new Timer(CambioImagenes);
-            cambioImgs.Change(CICLO, CICLO);
-            CambioImagenes();
+            if (!System.Diagnostics.Debugger.IsAttached)
+                cambioImgs.Change(CICLO, CICLO);
+            else cambioImgs.Change(1000, 2000);
+          
             Date = Date;
 
         }
@@ -71,17 +79,19 @@ namespace KawaiCalendar.Calendar
             {
                 DiaMes dia;
                 int dayOfWeek;
+                int dayOfYear;
 
                 date = value;
                 DataBase.SetDate(date);
 
                 dayOfWeek = (int)DataBase.FirstDayMonth.DayOfWeek - 1;
-
+                dayOfYear = DataBase.FirstDayMonth.DayOfYear;
                 //pongo el dia
                 for (int i = 0; i < TOTALDAYS; i++)
                 {
                     dia = ugMes.Children[i + DIASSEMANA] as DiaMes;
                     dia.Date = DataBase.FirstDayMonth.AddDays(i - dayOfWeek);
+                    dia.SetItems(GetList(dia.Date.DayOfYear));
                     dia.IsSelected = null;
                 }
                 for (int i = dayOfWeek, j = 0; j < DataBase.DiasMes; j++, i++)
@@ -93,12 +103,11 @@ namespace KawaiCalendar.Calendar
                 //selecciono el dia del mes
                 (ugMes.Children[DIASSEMANA + dayOfWeek + date.Day - 1] as DiaMes).IsSelected = true;
 
-                CambioImagenes();
                 if (ChangeDate != null)
                     ChangeDate(this, new EventArgs());
             }
         }
-        public CalendarData DataBase { get; set; }
+
 
         private void CambioImagenes(object state = null)
         {
@@ -121,7 +130,7 @@ namespace KawaiCalendar.Calendar
                         posiciones.Remove(diaACambiar);
 
                         dateAux = GetDate(diaACambiar);
-                        (ugMes.Children[diaACambiar + DIASSEMANA] as DiaMes).Items = GetRandom(dateAux.DayOfYear);
+                        (ugMes.Children[diaACambiar + DIASSEMANA] as DiaMes).NextPic();
                     }
                     cambiando = false;
                 };
@@ -136,7 +145,7 @@ namespace KawaiCalendar.Calendar
             return DataBase.FirstDayMonth.AddDays(posMonth);
         }
 
-        private List<CalendarItem> GetRandom(int dayOfYear)
+        private List<CalendarItem> GetList(int dayOfYear)
         {
             List<CalendarItem> items;
 
@@ -178,7 +187,7 @@ namespace KawaiCalendar.Calendar
             DiasMes = FirstDayMonth.AddMonths(1).AddDays(-1).Day;
         }
     }
-    public class CalendarItem : IElementoBinarioComplejo
+    public class CalendarItem : IElementoBinarioComplejo,IComparable,IComparable<CalendarItem>
     {
         public static ElementoBinario Serializador = ElementoBinario.GetSerializador<CalendarItem>();
 
@@ -187,5 +196,19 @@ namespace KawaiCalendar.Calendar
         public string FilePic { get; set; }
 
         ElementoBinario IElementoBinarioComplejo.Serialitzer => Serializador;
+
+        public int CompareTo(object obj)
+        {
+            return CompareTo(obj as CalendarItem);
+        }
+
+        public int CompareTo([AllowNull] CalendarItem other)
+        {
+            int compareTo = Equals(other, default) ? -1 : 0;
+            if (compareTo == 0)
+                compareTo = Year.CompareTo(other.Year);
+            return compareTo;
+        }
+
     }
 }

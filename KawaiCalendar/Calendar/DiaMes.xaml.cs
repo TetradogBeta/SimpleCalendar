@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Gabriel.Cat.S.Extension;
+using Gabriel.Cat.S.Utilitats;
 
 namespace KawaiCalendar.Calendar
 {
@@ -25,12 +28,14 @@ namespace KawaiCalendar.Calendar
         private DateTime date;
         private bool? isSelected;
         private int pos;
-
+        Task next;
+        Semaphore semaphore;
         public DiaMes()
         {
-
+            semaphore = new Semaphore(1, 1);
             pos = 0;
             InitializeComponent();
+            next = Task.Delay(1);
         }
         public DiaMes(DateTime date) : this()
         {
@@ -38,26 +43,72 @@ namespace KawaiCalendar.Calendar
             Date = date;
         }
 
-        public IList<CalendarItem> Items
+        public IList<CalendarItem> GetItems()
         {
-            get => items;
-            set
-            {
-                items = value;
-                NextPic();
-            }
+            return items;
         }
 
-        private void NextPic()
+        public async Task SetItems(IList<CalendarItem> value)
         {
-            if (!Equals(Items, default) && File.Exists(Items[pos % Items.Count].FilePic))
-                imgDia.SetImage(new Bitmap(Items[pos % Items.Count].FilePic));
-            else imgDia.SetImage(new Bitmap(1, 1));
+            try
+            {
+                semaphore.WaitOne();
+                items = value;
+            }
+            catch { }
+            finally
+            {
+                semaphore.Release();
+            }
+
+            next = NextPic();
+
+            await next;
+        }
+
+        public async Task NextPic()
+        {
+            Action act;
+            bool encontrado = false;
+
+            if (!System.Diagnostics.Debugger.IsAttached)
+                await Task.Delay(MiRandom.Next(Calendar.TOTALDAYS) * 1000);
+
+            act = () =>
+            {
+                try
+                {
+                    semaphore.WaitOne();
+                    if (!Equals(GetItems(), default))
+                        for (int i = 0; i < GetItems().Count && !encontrado; i++)
+                        {
+                            encontrado = GetItems()[pos % GetItems().Count].Year <= Date.Year && File.Exists(GetItems()[pos % GetItems().Count].FilePic);
+                            if (!encontrado) pos++;
+                            if (pos == int.MaxValue)
+                                pos = 0;
+                        }
+                    if (encontrado)
+                        imgDia.SetImage(new Bitmap(GetItems()[pos % GetItems().Count].FilePic));
+                    else imgDia.SetImage(new Bitmap(1, 1));
+                }
+                catch { }
+                finally
+                {
+                    semaphore.Release();
+
+                    pos++;
+                    if (pos == int.MaxValue)
+                        pos = 0;
 
 
-            pos++;
-            if (pos == int.MaxValue)
-                pos = 0;
+                }
+            };
+           await Dispatcher.BeginInvoke(act);
+
+
+
+
+
         }
 
         public DateTime Date

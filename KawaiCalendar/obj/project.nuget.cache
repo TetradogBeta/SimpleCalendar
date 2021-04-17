@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "WcG9w/8QYVUG5IaR1g4ym69wkeZ0Dc5QkBiZe3nyYi63fUbtxPzrEPwhvFMuXJSQPia/9r/CW1Eh/2oK2/QlIQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\tetra\\Documents\\GitHub\\SimpleCalendar\\KawaiCalendar\\KawaiCalendar.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\tetra\\.nuget\\packages\\gabriel.cat.s.binaris\\1.1.5-preview1.0\\gabriel.cat.s.binaris.1.1.5-preview1.0.nupkg.sha512",
+    "C:\\Users\\tetra\\.nuget\\packages\\gabriel.cat.s.seguretat\\1.0.2.2-preview1.0.8\\gabriel.cat.s.seguretat.1.0.2.2-preview1.0.8.nupkg.sha512",
+    "C:\\Users\\tetra\\.nuget\\packages\\gabriel.cat.s.utilitats\\1.1.5.4\\gabriel.cat.s.utilitats.1.1.5.4.nupkg.sha512",
+    "C:\\Users\\tetra\\.nuget\\packages\\gabriel.cat.s.wpf\\1.0.1-preview1.0.0\\gabriel.cat.s.wpf.1.0.1-preview1.0.0.nupkg.sha512",
+    "C:\\Users\\tetra\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
+    "C:\\Users\\tetra\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
+    "C:\\Users\\tetra\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\tetra\\.nuget\\packages\\system.drawing.common\\4.7.0\\system.drawing.common.4.7.0.nupkg.sha512"
+  ],
+  "logs": []
+}
