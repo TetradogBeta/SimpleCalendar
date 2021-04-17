@@ -4,6 +4,7 @@ C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcore
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\KawaiCalendar.runtimeconfig.json
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\KawaiCalendar.pdb
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\Gabriel.Cat.S.Binaris.dll
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\Gabriel.Cat.S.Drawing.dll
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\Gabriel.Cat.S.Seguretat.dll
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\Gabriel.Cat.S.Utilitats.dll
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\Gabriel.Cat.S.Wpf.dll

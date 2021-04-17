@@ -10,11 +10,11 @@ none
 false
 TRACE;RELEASE;NETCOREAPP;NETCOREAPP3_1;
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\App.xaml
-4900473740
+6-1987968749
 
-91146478413
-1981859198415
-Calendar\Calendar.xaml;Calendar\DiaMes.xaml;MainWindow.xaml;SelectorDeFecha.xaml;
+14-1324815440
+199859825914
+Calendar\Calendar.xaml;Calendar\DiaMes.xaml;DiaManagerWindow.xaml;MainWindow.xaml;SelectorDeFecha.xaml;YearViewer.xaml;
 
 False
 

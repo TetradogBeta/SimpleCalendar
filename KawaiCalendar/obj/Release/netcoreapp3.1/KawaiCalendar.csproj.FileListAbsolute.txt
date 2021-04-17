@@ -30,3 +30,8 @@ C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcore
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcoreapp3.1\KawaiCalendar.pdb
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcoreapp3.1\KawaiCalendar.genruntimeconfig.cache
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\Notifications.Wpf.Core.dll
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\Gabriel.Cat.S.Drawing.dll
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcoreapp3.1\DiaManagerWindow.g.cs
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcoreapp3.1\YearViewer.g.cs
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcoreapp3.1\DiaManagerWindow.baml
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcoreapp3.1\YearViewer.baml

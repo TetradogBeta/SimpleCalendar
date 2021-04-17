@@ -69,7 +69,7 @@ namespace KawaiCalendar {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/KawaiCalendar;V1.0.0.0;component/yearviewer.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/KawaiCalendar;component/yearviewer.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\YearViewer.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
