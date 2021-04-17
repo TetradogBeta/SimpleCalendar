@@ -55,6 +55,10 @@
             "Gabriel.Cat.S.Wpf": {
               "target": "Package",
               "version": "[1.0.1-preview1.0.0, )"
+            },
+            "Notifications.Wpf.Core": {
+              "target": "Package",
+              "version": "[1.3.2, )"
             }
           },
           "imports": [

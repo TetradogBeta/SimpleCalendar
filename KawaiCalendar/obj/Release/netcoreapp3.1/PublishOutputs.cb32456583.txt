@@ -7,3 +7,4 @@ C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcore
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\Gabriel.Cat.S.Seguretat.dll
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\Gabriel.Cat.S.Utilitats.dll
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\Gabriel.Cat.S.Wpf.dll
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\publish\Notifications.Wpf.Core.dll

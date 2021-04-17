@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace KawaiCalendar.Calendar
         public const int TOTALDAYS = DIASSEMANA * 6;
         const int CICLO = TOTALDAYS * 1000;//cada 42 segundos porque mola :D vale no xD
         public static CalendarData DataBase { get; set; }
+        public static readonly string[] FormatosValidos = { ".jpeg", ".gif", ".jpg", ".png", ".bmp" };
 
         bool cambiando;
         DateTime date;
@@ -40,14 +42,15 @@ namespace KawaiCalendar.Calendar
         public Calendar()
         {
             const string DIAS = "LMXJVSD";
+
             Viewbox view;
+
             InitializeComponent();
 
             cambiando = false;
-
             date = DateTime.Now;
 
-            if(Equals(DataBase,default))
+            if (Equals(DataBase, default))
                 DataBase = new CalendarData();
 
             for (int i = 0; i < DIAS.Length; i++)
@@ -63,15 +66,15 @@ namespace KawaiCalendar.Calendar
 
             cambioImgs = new Timer(CambioImagenes);
             if (!System.Diagnostics.Debugger.IsAttached)
-                cambioImgs.Change(CICLO, CICLO);
+                cambioImgs.Change(1000, CICLO);
             else cambioImgs.Change(1000, 2000);
-          
+
             Date = Date;
 
         }
 
 
-
+        public bool HasChanges { get; set; }
         public DateTime Date
         {
             get => date;
@@ -157,9 +160,27 @@ namespace KawaiCalendar.Calendar
         }
         public void Add(DateTime date, params string[] items)
         {
+            Notifications.Wpf.Core.NotificationManager manager = new Notifications.Wpf.Core.NotificationManager();
+
             if (!DataBase.DayItems.ContainsKey(date.DayOfYear))
                 DataBase.DayItems.Add(date.DayOfYear, new List<CalendarItem>());
-            DataBase.DayItems[date.DayOfYear].AddRange(items.Convert((i) => new CalendarItem { FilePic = i, Year = date.Year }));
+            DataBase.DayItems[date.DayOfYear].AddRange(items.Filtra(s =>
+            {
+
+                bool result = FormatosValidos.Contains(new FileInfo(s).Extension);
+                if (!result)
+                {
+
+                    manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
+                    {
+                        Title = "Incompatible file",
+                        Message = System.IO.Path.GetFileName(s),
+                        Type = Notifications.Wpf.Core.NotificationType.Error
+                    });
+                }
+                return result;
+            }).Convert((i) => new CalendarItem { FilePic = i, Year = date.Year }));
+            HasChanges = true;
         }
     }
     public class CalendarData : IElementoBinarioComplejo
@@ -187,7 +208,7 @@ namespace KawaiCalendar.Calendar
             DiasMes = FirstDayMonth.AddMonths(1).AddDays(-1).Day;
         }
     }
-    public class CalendarItem : IElementoBinarioComplejo,IComparable,IComparable<CalendarItem>
+    public class CalendarItem : IElementoBinarioComplejo, IComparable, IComparable<CalendarItem>
     {
         public static ElementoBinario Serializador = ElementoBinario.GetSerializador<CalendarItem>();
 

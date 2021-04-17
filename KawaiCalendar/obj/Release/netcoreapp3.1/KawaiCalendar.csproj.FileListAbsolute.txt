@@ -29,3 +29,4 @@ C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcore
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcoreapp3.1\KawaiCalendar.dll
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcoreapp3.1\KawaiCalendar.pdb
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Release\netcoreapp3.1\KawaiCalendar.genruntimeconfig.cache
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Release\netcoreapp3.1\Notifications.Wpf.Core.dll

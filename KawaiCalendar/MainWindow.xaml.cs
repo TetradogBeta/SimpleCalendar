@@ -40,7 +40,7 @@ namespace KawaiCalendar
             Top = PosY;
             Left = PosX;
 
-          
+
 
             calendar.Date = calendar.Date;
             Closing += (s, e) =>
@@ -117,13 +117,17 @@ namespace KawaiCalendar
             PosX = Left;
             HeightWin = Height;
             WidthWin = Width;
-            Calendar.CalendarData.Serializador.GetBytes(Calendar.Calendar.DataBase).Save(DataBasePath);
+            if (calendar.HasChanges)
+            {
+                Calendar.CalendarData.Serializador.GetBytes(Calendar.Calendar.DataBase).Save(DataBasePath);
+                calendar.HasChanges = false;
+            }
             calendar_ChangeDate();
         }
 
         private void miAdd_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog opn = new OpenFileDialog() { Multiselect=true};
+            OpenFileDialog opn = new OpenFileDialog() { Multiselect = true };
             if (opn.ShowDialog().GetValueOrDefault())
                 Add(opn.FileNames);
         }
@@ -151,8 +155,17 @@ namespace KawaiCalendar
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F12)
-                Save();
+            switch (e.Key)
+            {
+                case Key.F12:
+                case Key.G:
+                case Key.S:
+
+                    Save();
+                    break;
+
+            }
+
         }
 
         private void Window_Drop(object sender, DragEventArgs e)
@@ -163,12 +176,12 @@ namespace KawaiCalendar
         {
             SelectorDeFecha selector = new SelectorDeFecha();
             selector.ShowDialog();
-            calendar.Add(selector.Date.Value,files);
+            calendar.Add(selector.Date.Value, files);
         }
 
         private void Window_DragOver(object sender, DragEventArgs e)
         {
-   
+
 
             e.Effects = DragDropEffects.None;
 

@@ -92,6 +92,18 @@
           }
         }
       },
+      "Notifications.Wpf.Core/1.3.2": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.1/Notifications.Wpf.Core.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Notifications.Wpf.Core.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WPF"
+        ]
+      },
       "System.Drawing.Common/4.7.0": {
         "type": "package",
         "dependencies": {
@@ -285,6 +297,20 @@
         "version.txt"
       ]
     },
+    "Notifications.Wpf.Core/1.3.2": {
+      "sha512": "MTQEW4XGAz2OaV86XXkaydaWjSvEYeTvUN3a2iFB2HNnpAmifRQNlxrvyawKxgLF9NTCNq6codslrSmvDlTaow==",
+      "type": "package",
+      "path": "notifications.wpf.core/1.3.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/netcoreapp3.1/Notifications.Wpf.Core.dll",
+        "lib/netcoreapp3.1/Notifications.Wpf.Core.xml",
+        "notifications.wpf.core.1.3.2.nupkg.sha512",
+        "notifications.wpf.core.nuspec"
+      ]
+    },
     "System.Drawing.Common/4.7.0": {
       "sha512": "v+XbyYHaZjDfn0ENmJEV1VYLgGgCTx1gnfOBcppowbpOAriglYgGCvFCPr2EEZyBvXlpxbEsTwkOlInl107ahA==",
       "type": "package",
@@ -329,7 +355,8 @@
     ".NETCoreApp,Version=v3.1": [
       "Gabriel.Cat.S.Binaris >= 1.1.5-Preview1.0",
       "Gabriel.Cat.S.Utilitats >= 1.1.5.4",
-      "Gabriel.Cat.S.Wpf >= 1.0.1-preview1.0.0"
+      "Gabriel.Cat.S.Wpf >= 1.0.1-preview1.0.0",
+      "Notifications.Wpf.Core >= 1.3.2"
     ]
   },
   "packageFolders": {
@@ -387,6 +414,10 @@
           "Gabriel.Cat.S.Wpf": {
             "target": "Package",
             "version": "[1.0.1-preview1.0.0, )"
+          },
+          "Notifications.Wpf.Core": {
+            "target": "Package",
+            "version": "[1.3.2, )"
           }
         },
         "imports": [
