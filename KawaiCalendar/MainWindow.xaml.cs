@@ -24,10 +24,12 @@ namespace KawaiCalendar
     public partial class MainWindow : Window
     {
         public const string VERSION = "KawaiCalendar V1.3c";
+        static MainWindow Main { get; set; }
         Uri ulrGithub = new Uri("https://github.com/TetradogBeta/SimpleCalendar");
         string DataBasePath = "database.bin";
         public MainWindow()
         {
+            Main = this;
             if (File.Exists(DataBasePath))
             {
                 Calendar.Calendar.DataBase = Calendar.CalendarData.Serializador.GetObject(File.ReadAllBytes(DataBasePath)) as Calendar.CalendarData;
@@ -51,6 +53,9 @@ namespace KawaiCalendar
             };
 
         }
+
+
+
         public string DataBase
         {
             get
@@ -129,9 +134,13 @@ namespace KawaiCalendar
 
         private void miAdd_Click(object sender, RoutedEventArgs e)
         {
+            AddFilesDialog(DateTime.Now);
+        }
+        private void AddFilesDialog(DateTime date)
+        {
             OpenFileDialog opn = new OpenFileDialog() { Multiselect = true };
             if (opn.ShowDialog().GetValueOrDefault())
-                Add(opn.FileNames);
+                Add(date, opn.FileNames);
         }
 
         private void miMoveToDate_Click(object sender, RoutedEventArgs e)
@@ -202,11 +211,12 @@ namespace KawaiCalendar
 
         private void Window_Drop(object sender, DragEventArgs e)
         {
-            Add(e.Data.GetData(DataFormats.FileDrop) as string[]);
+            Add(DateTime.Now,e.Data.GetData(DataFormats.FileDrop) as string[]);
         }
-        private void Add(string[] files)
+        private void Add(DateTime date,string[] files)
         {
             SelectorDeFecha selector = new SelectorDeFecha();
+            selector.Date = date;
             selector.ShowDialog();
             calendar.Add(selector.Date.Value, files);
         }
@@ -224,6 +234,10 @@ namespace KawaiCalendar
                 e.Effects = DragDropEffects.Copy;
 
             }
+        }
+        public static void AddFiles(DateTime date)
+        {
+            Main.AddFilesDialog(date);
         }
     }
 }

@@ -15,7 +15,13 @@
     <Compile Update="Calendar\DiaMes.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="DiaManagerWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="SelectorDeFecha.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="YearViewer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -26,10 +32,16 @@
     <Page Update="Calendar\DiaMes.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="DiaManagerWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SelectorDeFecha.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="YearViewer.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

@@ -7,9 +7,10 @@ using Gabriel.Cat.S.Extension;
 
 namespace KawaiCalendar.Calendar
 {
-    public class CalendarItem : IElementoBinarioComplejo,ISaveAndLoad, IComparable, IComparable<CalendarItem>
+    public class CalendarItem : IElementoBinarioComplejo, ISaveAndLoad, IComparable, IComparable<CalendarItem>
     {
         public const string EXTENSION = ".jpeg";
+        public const int MAX = 250;
         public static readonly System.Drawing.Imaging.ImageFormat Formato = System.Drawing.Imaging.ImageFormat.Jpeg;
 
         public static ElementoBinario Serializador = ElementoBinario.GetSerializador<CalendarItem>();
@@ -49,7 +50,7 @@ namespace KawaiCalendar.Calendar
                 Bitmap bmp;
                 string path;
 
-    
+
 
                 if (Equals(img, default))
                 {
@@ -62,8 +63,10 @@ namespace KawaiCalendar.Calendar
                             Hash = bmp.GetBytes().Hash();
                             IdRapido = new FileInfo(FilePic).IdUnicoRapido();
 
-                            img = bmp.Escala(proporcion);
-                            img.Save(System.IO.Path.Combine(Directory, IdRapido + EXTENSION), Formato);
+                            img = bmp.SetMaxHeight(MAX);
+                            path = System.IO.Path.Combine(Directory, IdRapido + EXTENSION);
+                            if (!File.Exists(path))
+                                img.Save(path, Formato);
                         }
                     }
                     else
@@ -72,7 +75,8 @@ namespace KawaiCalendar.Calendar
                         if (File.Exists(path))
                         {
                             img = new Bitmap(path);
-                        }else if (File.Exists(FilePic))
+                        }
+                        else if (File.Exists(FilePic))
                         {
                             Hash = default;
                             img = Img;
@@ -102,7 +106,7 @@ namespace KawaiCalendar.Calendar
             int compareTo = Equals(other, default) ? -1 : 0;
             if (compareTo == 0)
                 compareTo = Year.CompareTo(other.Year);
-            if (compareTo == 0 && !Equals(IdRapido,default))
+            if (compareTo == 0 && !Equals(IdRapido, default))
                 compareTo = IdRapido.CompareTo(other.IdRapido);
             return compareTo;
         }

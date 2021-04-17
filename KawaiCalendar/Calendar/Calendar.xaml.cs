@@ -42,6 +42,7 @@ namespace KawaiCalendar.Calendar
             const string DIAS = "LMXJVSD";
 
             Viewbox view;
+            DiaMes diaMes;
 
             InitializeComponent();
 
@@ -59,7 +60,9 @@ namespace KawaiCalendar.Calendar
             }
             for (int i = 0; i < TOTALDAYS; i++)
             {
-                ugMes.Children.Add(new DiaMes(GetDate(i)));
+                diaMes = new DiaMes(GetDate(i));
+                diaMes.MouseLeftButtonUp += (s, e) => new DiaManagerWindow(DataBase, s as DiaMes).Show();
+                ugMes.Children.Add(diaMes);
             }
 
             cambioImgs = new Timer(CambioImagenes);
@@ -72,7 +75,7 @@ namespace KawaiCalendar.Calendar
         }
 
 
-        public bool HasChanges { get; set; }
+        public bool HasChanges { get => DataBase.HasChanges; set => DataBase.HasChanges = value; }
         public DateTime Date
         {
             get => date;
@@ -169,22 +172,31 @@ namespace KawaiCalendar.Calendar
 
             if (!DataBase.DayItems.ContainsKey(date.DayOfYear))
                 DataBase.DayItems.Add(date.DayOfYear, new List<CalendarItem>());
-            DataBase.DayItems[date.DayOfYear].AddRange(items.Filtra(s =>
+            try
             {
-
-                bool result = FormatosValidos.Contains(new FileInfo(s).Extension);
-                if (!result)
+                DataBase.WaitUseDic();
+                DataBase.DayItems[date.DayOfYear].AddRange(items.Filtra(s =>
                 {
 
-                    manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
+                    bool result = FormatosValidos.Contains(new FileInfo(s).Extension);
+                    if (!result)
                     {
-                        Title = "Incompatible file",
-                        Message = System.IO.Path.GetFileName(s),
-                        Type = Notifications.Wpf.Core.NotificationType.Error
-                    });
-                }
-                return result;
-            }).Convert((img) => new CalendarItem { FilePic = img, Year = date.Year }));
+
+                        manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
+                        {
+                            Title = "Incompatible file",
+                            Message = System.IO.Path.GetFileName(s),
+                            Type = Notifications.Wpf.Core.NotificationType.Error
+                        });
+                    }
+                    return result;
+                }).Convert((img) => new CalendarItem { FilePic = img, Year = date.Year }));
+            }
+            catch { }
+            finally
+            {
+                DataBase.ReleaseUseDic();
+            }
             HasChanges = true;
         }
     }
