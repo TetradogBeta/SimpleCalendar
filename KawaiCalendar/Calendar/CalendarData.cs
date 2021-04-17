@@ -35,7 +35,7 @@ namespace KawaiCalendar.Calendar
             FirstDayMonth = new DateTime(date.Year, date.Month, 1);
             DiasMes = FirstDayMonth.AddMonths(1).AddDays(-1).Day;
         }
-        public SortedList<int,List<CalendarItem>> GetItemsGroupByYear(int dayOfYear)
+        public SortedList<int,List<CalendarItem>> GetItemsGroupByYear(int dayOfYear, int year=-1)
         {
             SortedList<int, List<CalendarItem>> items = new SortedList<int, List<CalendarItem>>();
             List<CalendarItem> dayItems;
@@ -44,9 +44,10 @@ namespace KawaiCalendar.Calendar
                 dayItems = DayItems[dayOfYear];
                 for(int i = 0; i < dayItems.Count; i++)
                 {
-                    if (!items.ContainsKey(dayItems[i].Year))
+                    if (year!=-1 && year==dayItems[i].Year && !items.ContainsKey(dayItems[i].Year) || !items.ContainsKey(dayItems[i].Year))
                         items.Add(dayItems[i].Year, new List<CalendarItem>());
-                    items[dayItems[i].Year].Add(dayItems[i]);
+                    if(items.ContainsKey(dayItems[i].Year))
+                       items[dayItems[i].Year].Add(dayItems[i]);
                 }
             }
             return items;

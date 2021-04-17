@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -24,32 +25,47 @@ namespace KawaiCalendar
         {
             InitializeComponent();
         }
-        public YearViewer(DateTime date,CalendarData dataBase,KeyValuePair<int, List<CalendarItem>> items) : this()
+        public YearViewer(DateTime date, CalendarData dataBase, KeyValuePair<int, List<Calendar.CalendarItem>> item) : this()
         {
-            Image img;
+
             DataBase = dataBase;
             Date = date;
-            tbYear.Text = items.Key+"";
-            for(int i=0;i<items.Value.Count;i++)
+            Year =date.Year;
+            Reload(item);
+
+        }
+        CalendarData DataBase { get; set; }
+        DateTime Date { get; set; }
+        public int Year { get; private set; }
+        public void Reload(KeyValuePair<int, List<Calendar.CalendarItem>> item=default)
+        {
+            Image img;
+            List<Calendar.CalendarItem> items =Equals(item.Value,default)? DataBase.GetItemsGroupByYear(Date.DayOfYear,Year)[Year]:item.Value;
+            tbYear.Text = Year + "";
+            for (int i = 0; i < items.Count; i++)
             {
                 img = new Image();
                 img.Stretch = Stretch.UniformToFill;
-                img.SetImage(items.Value[i].GetImgOrInvertida());
-                img.Tag = items.Value[i];
-                img.MouseLeftButtonDown += (s, e) => {
+                img.SetImage(items[i].GetImgOrInvertida());
+                img.Tag = items[i];
+                img.MouseLeftButtonDown += (s, e) =>
+                {
                     Action act;
                     if (MessageBox.Show("¿Quieres quitarlo del dia?", "Atención", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
-                        DataBase.Remove(Date, (s as Image).Tag as CalendarItem);
-                        act = () => ugItemsYear.Children.Remove(s as UIElement);
+                        DataBase.Remove(Date, (s as Image).Tag as Calendar.CalendarItem);
+                        act = () =>
+                        {
+                            ugItemsYear.Children.Remove(s as UIElement);
+                            if (ugItemsYear.Children.Count == 0)
+                                (Parent as StackPanel).Children.Remove(this);
+                        };
                         Dispatcher.BeginInvoke(act);
                     }
-                
+
                 };
                 ugItemsYear.Children.Add(img);
             }
         }
-        CalendarData DataBase { get; set; }
-        DateTime Date { get; set; }
     }
 }

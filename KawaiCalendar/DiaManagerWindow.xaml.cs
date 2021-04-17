@@ -22,22 +22,47 @@ namespace KawaiCalendar
         {
             InitializeComponent();
         }
-        public DiaManagerWindow(CalendarData dataBase,DiaMes diaMes) : this()
+        public DiaManagerWindow(CalendarData dataBase, DiaMes diaMes) : this()
         {
             SortedList<int, List<CalendarItem>> items = dataBase.GetItemsGroupByYear(diaMes.Date.DayOfYear);
             Title = $"Dia {diaMes.Date.ToString().Split(' ')[0]} ";
             Date = diaMes.Date;
+            DataBase = dataBase;
             foreach (KeyValuePair<int, List<CalendarItem>> item in items)
             {
-                stkYears.Children.Add(new YearViewer(Date,dataBase,item));
+                stkYears.Children.Add(new YearViewer(Date, DataBase, item));
 
             }
         }
+        CalendarData DataBase { get; set; }
         DateTime Date { get; set; }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.AddFiles(Date);
+            Action act;
+            DateTime date=MainWindow.AddFiles(Date);
+            bool reloaded = false;
+            if (date.Day == Date.Day && date.Month == Date.Month)
+            {
+                act = () =>
+                {
+                    YearViewer yearViewer;
+                    foreach (var year in stkYears.Children)
+                    {
+                        yearViewer = year as YearViewer;
+                        if (yearViewer.Year == date.Year)
+                        {
+                            yearViewer.Reload();
+                            reloaded = true;
+                        }
+                    }
+                    if (!reloaded)
+                    {
+                        stkYears.Children.Add(new YearViewer(date, DataBase, default));
+                    }
+                };
+                Dispatcher.BeginInvoke(act);
+            }
         }
     }
 }

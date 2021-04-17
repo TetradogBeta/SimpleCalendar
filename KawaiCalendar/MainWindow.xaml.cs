@@ -136,11 +136,13 @@ namespace KawaiCalendar
         {
             AddFilesDialog(DateTime.Now);
         }
-        private void AddFilesDialog(DateTime date)
+        private DateTime AddFilesDialog(DateTime date)
         {
+            DateTime dateResult=default;
             OpenFileDialog opn = new OpenFileDialog() { Multiselect = true };
             if (opn.ShowDialog().GetValueOrDefault())
-                Add(date, opn.FileNames);
+               dateResult= Add(date, opn.FileNames);
+            return dateResult;
         }
 
         private void miMoveToDate_Click(object sender, RoutedEventArgs e)
@@ -213,12 +215,13 @@ namespace KawaiCalendar
         {
             Add(DateTime.Now,e.Data.GetData(DataFormats.FileDrop) as string[]);
         }
-        private void Add(DateTime date,string[] files)
+        private DateTime Add(DateTime date,string[] files)
         {
             SelectorDeFecha selector = new SelectorDeFecha();
             selector.Date = date;
             selector.ShowDialog();
             calendar.Add(selector.Date.Value, files);
+            return selector.Date.Value;
         }
 
         private void Window_DragOver(object sender, DragEventArgs e)
@@ -235,9 +238,9 @@ namespace KawaiCalendar
 
             }
         }
-        public static void AddFiles(DateTime date)
+        public static DateTime AddFiles(DateTime date)
         {
-            Main.AddFilesDialog(date);
+            return Main.AddFilesDialog(date);
         }
     }
 }
