@@ -42,7 +42,8 @@ namespace KawaiCalendar
 
 
 
-            calendar.Date = calendar.Date;
+            calendar.Date = DateTime.Now;
+            
             Closing += (s, e) =>
             {
                 Save();
@@ -155,6 +156,7 @@ namespace KawaiCalendar
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            Action act=default;
             switch (e.Key)
             {
                 case Key.F12:
@@ -163,7 +165,30 @@ namespace KawaiCalendar
 
                     Save();
                     break;
+                case Key.Left:
+                case Key.NumPad4:
+                    act = () => calendar.Date = calendar.Date.AddMonths(-1);
+                    break;
+                case Key.Up:
+                case Key.NumPad8:
+                    act = () => calendar.Date = calendar.Date.AddYears(1);
+                    break;
+                case Key.Right:
+                case Key.NumPad6:
+                    act = () => calendar.Date = calendar.Date.AddMonths(1);
+                    break;
+                case Key.Down:
+                case Key.NumPad2:
+                    act = () => calendar.Date = calendar.Date.AddYears(-1);
+                    break;
+                case Key.F5:
+                    act = () => calendar.Date = DateTime.Now;
+                    break;
 
+            }
+            if (!Equals(act, default))
+            {
+               Dispatcher.BeginInvoke(act);
             }
 
         }

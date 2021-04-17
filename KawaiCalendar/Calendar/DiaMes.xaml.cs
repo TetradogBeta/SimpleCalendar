@@ -28,14 +28,14 @@ namespace KawaiCalendar.Calendar
         private DateTime date;
         private bool? isSelected;
         private int pos;
-        Task next;
+
         Semaphore semaphore;
         public DiaMes()
         {
+            TicketIdActual = int.MinValue;
             semaphore = new Semaphore(1, 1);
             pos = 0;
             InitializeComponent();
-            next = Task.Delay(1);
         }
         public DiaMes(DateTime date) : this()
         {
@@ -43,6 +43,7 @@ namespace KawaiCalendar.Calendar
             Date = date;
         }
         bool MouseHover { get; set; }
+        int TicketIdActual { get; set; }
         public IList<CalendarItem> GetItems()
         {
             return items;
@@ -61,63 +62,75 @@ namespace KawaiCalendar.Calendar
                 semaphore.Release();
             }
 
-            next = NextPic();
-
-            await next;
+            await NextPic();
         }
 
         public async Task NextPic()
         {
             Action act;
             string path;
+            int ticketId;
             bool encontrado = false;
+
+            TicketIdActual++;
+            ticketId = TicketIdActual;
 
 
             if (!System.Diagnostics.Debugger.IsAttached)
-                await Task.Delay(MiRandom.Next(Calendar.TOTALDAYS) * 1000);
+                for (int i = 0, j = MiRandom.Next(Calendar.TOTALDAYS) * 10; i < j && Equals(ticketId, TicketIdActual) && !MouseHover; i++)
+                    await Task.Delay(100);
 
-            if (!Equals(imgDia.Tag, default))
-                while (MouseHover) await Task.Delay(1000);
-            act =  () =>
+            if (!Equals(Tag, default))
             {
-                try
-                {
-                    semaphore.WaitOne();
-                    if (!Equals(GetItems(), default))
-                        for (int i = 0; i < GetItems().Count && !encontrado; i++)
-                        {
-                            encontrado = GetItems()[pos % GetItems().Count].Year <= Date.Year && File.Exists(GetItems()[pos % GetItems().Count].FilePic);
-                            if (!encontrado) pos++;
-                            if (pos == int.MaxValue)
-                                pos = 0;
-                        }
-        
-                    if (encontrado)
-                    {
-                        path = GetItems()[pos % GetItems().Count].FilePic;
-                        imgDia.SetImage(new Bitmap(path));
-                        imgDia.Tag = path;
-                    }
-                    else
-                    {
-                        imgDia.SetImage(new Bitmap(1, 1));
-                        imgDia.Tag = default;
-                    }
-                }
-                catch { }
-                finally
-                {
-                    semaphore.Release();
+                while (MouseHover && Equals(ticketId, TicketIdActual)) await Task.Delay(100);
 
-                    pos++;
-                    if (pos == int.MaxValue)
-                        pos = 0;
+                if (Equals(ticketId, TicketIdActual)) await Task.Delay(900);//asi no es tan repentino el cambio
+            }
+
+            if (Equals(ticketId, TicketIdActual))
+            {
+                act = () =>
+               {
+                   try
+                   {
+                       semaphore.WaitOne();
+                       if (!Equals(GetItems(), default))
+                           for (int i = 0; i < GetItems().Count && !encontrado && Equals(ticketId, TicketIdActual); i++)
+                           {
+                               encontrado = GetItems()[pos % GetItems().Count].Year <= Date.Year && File.Exists(GetItems()[pos % GetItems().Count].FilePic);
+                               if (!encontrado) pos++;
+                               if (pos == int.MaxValue)
+                                   pos = 0;
+                           }
+                       if (Equals(ticketId, TicketIdActual))
+                       {
+                           if (encontrado)
+                           {
+                               path = GetItems()[pos % GetItems().Count].FilePic;
+                               imgDia.SetImage(new Bitmap(path));
+                               Tag = path;
+                           }
+                           else
+                           {
+                               imgDia.SetImage(new Bitmap(1, 1));
+                               Tag = default;
+                           }
+                       }
+                   }
+                   catch { }
+                   finally
+                   {
+                       semaphore.Release();
+
+                       pos++;
+                       if (pos == int.MaxValue)
+                           pos = 0;
 
 
-                }
-            };
-            await Dispatcher.BeginInvoke(act);
-
+                   }
+               };
+                await Dispatcher.BeginInvoke(act);
+            }
 
 
 
@@ -158,9 +171,11 @@ namespace KawaiCalendar.Calendar
 
         private void UserControl_MouseEnter(object sender, MouseEventArgs e)
         {
+
             if (!Equals(imgDia.Source, default) && !double.IsNaN(imgDia.Source.Width) && imgDia.Source.Width > 10)
                 tbDia.Foreground = System.Windows.Media.Brushes.Transparent;
             MouseHover = true;
+
         }
 
         private void UserControl_MouseLeave(object sender, MouseEventArgs e)
@@ -171,9 +186,31 @@ namespace KawaiCalendar.Calendar
 
         private void UserControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!Equals(imgDia.Tag, default))
+            const int ERROR = 1;
+
+            FileInfo file;
+            Notifications.Wpf.Core.NotificationManager manager;
+            System.Diagnostics.Process process;
+
+            if (!Equals(Tag, default))
             {
-                new FileInfo(imgDia.Tag.ToString()).Abrir();
+                file = new FileInfo(Tag + "");
+
+                process = file.Abrir();
+                process.WaitForExit();
+                if (process.ExitCode == ERROR)
+                {
+                    manager = new Notifications.Wpf.Core.NotificationManager();
+                    manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
+                    {
+                        Title = "Bug ageno al programa",
+                        Message = $"Hay un problema al abrir el archivo '{file.Name}',no te preocupes al archivo no le pasa nada,te abro la carpeta contenedora",
+                        Type = Notifications.Wpf.Core.NotificationType.Error,
+
+                    });
+                    file.Directory.Abrir();
+                }
+
             }
         }
     }
