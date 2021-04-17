@@ -29,3 +29,5 @@ C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreap
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreapp3.1\SelectorDeFecha.g.cs
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreapp3.1\SelectorDeFecha.baml
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Debug\netcoreapp3.1\Notifications.Wpf.Core.dll
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\bin\Debug\netcoreapp3.1\Gabriel.Cat.S.Drawing.dll
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreapp3.1\KawaiCalendar.csprojAssemblyReference.cache
