@@ -14,11 +14,11 @@ namespace KawaiCalendar.Calendar
         public CalendarData()
         {
             SetDate(DateTime.Now);
-            DayItems = new SortedList<int, List<CalendarItem>>();
+            DayItems = new SortedList<DateDay, List<CalendarItem>>();
             semaphore = new Semaphore(1,1);
 
         }
-        public SortedList<int, List<CalendarItem>> DayItems { get; set; }
+        public SortedList<DateDay, List<CalendarItem>> DayItems { get; set; }
 
         [IgnoreSerialitzer]
         public DateTime FirstDayMonth { get; set; }
@@ -35,7 +35,7 @@ namespace KawaiCalendar.Calendar
             FirstDayMonth = new DateTime(date.Year, date.Month, 1);
             DiasMes = FirstDayMonth.AddMonths(1).AddDays(-1).Day;
         }
-        public SortedList<int,List<CalendarItem>> GetItemsGroupByYear(int dayOfYear, int year=-1)
+        public SortedList<int,List<CalendarItem>> GetItemsGroupByYear(DateDay dayOfYear, int year=-1)
         {
             SortedList<int, List<CalendarItem>> items = new SortedList<int, List<CalendarItem>>();
             List<CalendarItem> dayItems;
@@ -56,7 +56,7 @@ namespace KawaiCalendar.Calendar
         public void Remove(DateTime date,CalendarItem calendarItem)
         {
             WaitUseDic();
-            DayItems[date.DayOfYear].Remove(calendarItem);
+            DayItems[new DateDay(date)].Remove(calendarItem);
 
             ReleaseUseDic();
             HasChanges = true;

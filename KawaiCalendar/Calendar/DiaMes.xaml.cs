@@ -186,15 +186,19 @@ namespace KawaiCalendar.Calendar
 
         private void UserControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+            AbrirArchivo(Tag);
+        }
+        public static void AbrirArchivo(object tag)
+        {
             const int ERROR = 1;
 
             FileInfo file;
             Notifications.Wpf.Core.NotificationManager manager;
             System.Diagnostics.Process process;
 
-            if (!Equals(Tag, default))
+            if (!Equals(tag, default))
             {
-                file = new FileInfo(Tag + "");
+                file = new FileInfo(tag + "");
                 if (file.Exists)
                 {
                     process = file.Abrir();
@@ -218,7 +222,7 @@ namespace KawaiCalendar.Calendar
                     manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
                     {
                         Title = "Archivo no encontrado",
-                        Message = $"'{(Tag as CalendarItem).FileName}'",
+                        Message = $"'{(tag as CalendarItem).FileName}'",
                         Type = Notifications.Wpf.Core.NotificationType.Information,
 
                     });

@@ -99,7 +99,7 @@ namespace KawaiCalendar.Calendar
                     dia.Date = DataBase.FirstDayMonth.AddDays(i - dayOfWeek);
                     if (hasChanges)
                     {
-                        dia.SetItems(GetList(dia.Date.DayOfYear));
+                        dia.SetItems(GetList(new DateDay(dia.Date)));
                         if (!Equals(dia.Tag, default))
                             dia.NextPic();
                     }
@@ -156,7 +156,7 @@ namespace KawaiCalendar.Calendar
             return DataBase.FirstDayMonth.AddDays(posMonth);
         }
 
-        private List<CalendarItem> GetList(int dayOfYear)
+        private List<CalendarItem> GetList(DateDay dayOfYear)
         {
             List<CalendarItem> items;
 
@@ -170,12 +170,12 @@ namespace KawaiCalendar.Calendar
         {
             Notifications.Wpf.Core.NotificationManager manager = new Notifications.Wpf.Core.NotificationManager();
 
-            if (!DataBase.DayItems.ContainsKey(date.DayOfYear))
-                DataBase.DayItems.Add(date.DayOfYear, new List<CalendarItem>());
+            if (!DataBase.DayItems.ContainsKey(new DateDay(date)))
+                DataBase.DayItems.Add(new DateDay(date), new List<CalendarItem>());
             try
             {
                 DataBase.WaitUseDic();
-                DataBase.DayItems[date.DayOfYear].AddRange(items.Filtra(s =>
+                DataBase.DayItems[new DateDay(date)].AddRange(items.Filtra(s =>
                 {
 
                     bool result = FormatosValidos.Contains(new FileInfo(s).Extension);

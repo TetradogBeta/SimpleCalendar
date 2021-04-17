@@ -24,13 +24,13 @@ namespace KawaiCalendar
         }
         public DiaManagerWindow(CalendarData dataBase, DiaMes diaMes) : this()
         {
-            SortedList<int, List<CalendarItem>> items = dataBase.GetItemsGroupByYear(diaMes.Date.DayOfYear);
+            SortedList<int, List<CalendarItem>> items = dataBase.GetItemsGroupByYear(new DateDay(diaMes.Date));
             Title = $"Dia {diaMes.Date.ToString().Split(' ')[0]} ";
             Date = diaMes.Date;
             DataBase = dataBase;
             foreach (KeyValuePair<int, List<CalendarItem>> item in items)
             {
-                stkYears.Children.Add(new YearViewer(Date, DataBase, item));
+                stkYears.Children.Add(new YearViewer(new DateTime(item.Key,Date.Month,Date.Day), DataBase, item));
 
             }
         }
@@ -50,7 +50,7 @@ namespace KawaiCalendar
                     foreach (var year in stkYears.Children)
                     {
                         yearViewer = year as YearViewer;
-                        if (yearViewer.Year == date.Year)
+                        if (yearViewer.Date.Year == date.Year)
                         {
                             yearViewer.Reload();
                             reloaded = true;

@@ -30,25 +30,27 @@ namespace KawaiCalendar
 
             DataBase = dataBase;
             Date = date;
-            Year =date.Year;
             Reload(item);
 
         }
         CalendarData DataBase { get; set; }
-        DateTime Date { get; set; }
-        public int Year { get; private set; }
+        public DateTime Date { get; set; }
         public void Reload(KeyValuePair<int, List<Calendar.CalendarItem>> item=default)
         {
             Image img;
-            List<Calendar.CalendarItem> items =Equals(item.Value,default)? DataBase.GetItemsGroupByYear(Date.DayOfYear,Year)[Year]:item.Value;
-            tbYear.Text = Year + "";
+            List<Calendar.CalendarItem> items =Equals(item.Value,default)? DataBase.GetItemsGroupByYear(new DateDay(Date),Date.Year)[Date.Year]:item.Value;
+            tbYear.Text = Date.Year + "";
             for (int i = 0; i < items.Count; i++)
             {
                 img = new Image();
                 img.Stretch = Stretch.UniformToFill;
                 img.SetImage(items[i].GetImgOrInvertida());
                 img.Tag = items[i];
-                img.MouseLeftButtonDown += (s, e) =>
+                img.MouseRightButtonDown += (s, e) =>
+                {
+                    DiaMes.AbrirArchivo( (s as Image).Tag);
+                };
+               img.MouseLeftButtonDown += (s, e) =>
                 {
                     Action act;
                     if (MessageBox.Show("¿Quieres quitarlo del dia?", "Atención", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
