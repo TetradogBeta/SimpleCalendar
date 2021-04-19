@@ -18,6 +18,9 @@
     <Compile Update="DiaManagerWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="PicViewer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="SelectorDeFecha.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -36,6 +39,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PicViewer.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SelectorDeFecha.xaml">

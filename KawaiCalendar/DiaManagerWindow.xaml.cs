@@ -19,19 +19,32 @@ namespace KawaiCalendar
     /// </summary>
     public partial class DiaManagerWindow : Window
     {
+        static SortedList<DateDay, DiaManagerWindow> DicDiasManager = new SortedList<DateDay, DiaManagerWindow>();
         public DiaManagerWindow()
         {
             InitializeComponent();
         }
         public DiaManagerWindow(DiaMes diaMes) : this()
         {
+            if (!DicDiasManager.ContainsKey(diaMes.Date))
+            {
+                DicDiasManager.Add(diaMes.Date, this);
+                Title = $"Dia {diaMes.Date.ToString().Split(' ')[0]} ";
+                Date = diaMes.Date;
+                Update();
+                KeyDown += (s, e) => { if (e.Key == Key.F5) Update(); };
+                Closing += (s, e) =>{if (DicDiasManager.ContainsKey(Date)) DicDiasManager.Remove(Date);};
 
-            Title = $"Dia {diaMes.Date.ToString().Split(' ')[0]} ";
-            Date = diaMes.Date;
-            Update();
-            KeyDown += (s, e) => { if (e.Key == Key.F5) Update(); };
+            }
+            else
+            {
+                DicDiasManager[diaMes.Date].Focus();
+                IsClosed = true;
+                this.Close();
+            }
+
         }
-
+        public bool IsClosed { get; set; }
         DateTime Date { get; set; }
         public void Update()
         {
@@ -52,30 +65,36 @@ namespace KawaiCalendar
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+           MainWindow.AddFiles(Date);
+ 
+        }
+        public static void UpdateDay(DateTime day)
+        {
             Action act;
             YearViewer yearViewer;
-            DateTime date=MainWindow.AddFiles(Date);
+            DiaManagerWindow diaManager;
             bool reloaded = false;
             //si al final se añade a este dia lo recargo
-            if (date.Day == Date.Day && date.Month == Date.Month)
+            if (DicDiasManager.ContainsKey(day))
             {
+                diaManager = DicDiasManager[day];
                 act = () =>
                 {
-                    stkYears.Children.ToArray().Any((y) =>
+                   diaManager.stkYears.Children.ToArray().Any((y) =>
                     {
                         yearViewer = y as YearViewer;
-                        reloaded = yearViewer.Date.Year == date.Year;
+                        reloaded = yearViewer.Date.Year == day.Year;
                         if (reloaded)
                             yearViewer.Reload();
                         return reloaded;
                     });
                     if (!reloaded)
                     {
-                        stkYears.Children.Add(new YearViewer(date));
-                        stkYears.Children.Sort();
+                        diaManager.stkYears.Children.Add(new YearViewer(day));
+                        diaManager.stkYears.Children.Sort();
                     }
                 };
-                Dispatcher.BeginInvoke(act);
+                diaManager.Dispatcher.BeginInvoke(act);
             }
         }
     }

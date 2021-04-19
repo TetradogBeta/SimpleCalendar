@@ -35,3 +35,5 @@ C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreap
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreapp3.1\YearViewer.g.cs
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreapp3.1\DiaManagerWindow.baml
 C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreapp3.1\YearViewer.baml
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreapp3.1\PicViewer.g.cs
+C:\Users\tetra\Documents\GitHub\SimpleCalendar\KawaiCalendar\obj\Debug\netcoreapp3.1\PicViewer.baml

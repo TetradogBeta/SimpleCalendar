@@ -24,7 +24,7 @@ namespace KawaiCalendar
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "KawaiCalendar V1.5B";
+        public const string VERSION = "KawaiCalendar V1.6";
         static MainWindow Main { get; set; }
         Uri ulrGithub = new Uri("https://github.com/TetradogBeta/SimpleCalendar");
         string DataBasePath = "database.bin";
@@ -222,6 +222,7 @@ namespace KawaiCalendar
             selector.Date = date;
             selector.ShowDialog();
             CalendarData.DataBase.Add(selector.Date.Value, files);
+            DiaManagerWindow.UpdateDay(selector.Date.Value);
             return selector.Date.Value;
         }
 

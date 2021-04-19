@@ -97,7 +97,7 @@ namespace KawaiCalendar.Calendar
                        if (!Equals(GetItems(), default))
                            for (int i = 0; i < GetItems().Count && !encontrado && Equals(ticketId, TicketIdActual); i++)
                            {
-                               encontrado = GetItems()[pos % GetItems().Count].Year <= Date.Year && !Equals(GetItems()[pos % GetItems().Count].Img,default);
+                               encontrado = GetItems()[pos % GetItems().Count].Year <= Date.Year && !Equals(GetItems()[pos % GetItems().Count].Img, default);
                                if (!encontrado) pos++;
                                if (pos == int.MaxValue)
                                    pos = 0;
@@ -144,6 +144,7 @@ namespace KawaiCalendar.Calendar
             {
                 date = value;
                 tbDia.Text = date.Day + "";
+                imgDia.SetImage(new Bitmap(1, 1));
             }
         }
 
@@ -190,31 +191,15 @@ namespace KawaiCalendar.Calendar
         }
         public static void AbrirArchivo(object tagFileName)
         {
-            const int ERROR = 1;
-
             FileInfo file;
             Notifications.Wpf.Core.NotificationManager manager;
-            System.Diagnostics.Process process;
 
             if (!Equals(tagFileName, default))
             {
                 file = new FileInfo(tagFileName + "");
                 if (file.Exists)
                 {
-                    process = file.Abrir();
-                    process.WaitForExit();
-                    if (process.ExitCode == ERROR)
-                    {
-                        manager = new Notifications.Wpf.Core.NotificationManager();
-                        manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
-                        {
-                            Title = "Bug ageno al programa",
-                            Message = $"Hay un problema al abrir el archivo '{file.Name}',no te preocupes al archivo no le pasa nada,te abro la carpeta contenedora",
-                            Type = Notifications.Wpf.Core.NotificationType.Error,
-
-                        });
-                        file.Directory.Abrir();
-                    }
+                    new PicViewer(tagFileName).Show();
                 }
                 else
                 {
@@ -233,7 +218,10 @@ namespace KawaiCalendar.Calendar
 
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            new DiaManagerWindow(this).Show();
+            DiaManagerWindow diaManager = new DiaManagerWindow(this);
+            if (!diaManager.IsClosed)
+                diaManager.Show();
+
         }
     }
 }
