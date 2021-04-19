@@ -54,7 +54,7 @@ namespace KawaiCalendar
                       img.SetImage(items[i].GetImgOrInvertida());
                       img.Tag = items[i];
                       img.Height = Calendar.CalendarItem.MAX;
-                      img.Width = Calendar.CalendarItem.MAX;
+                      img.Width = Calendar.CalendarItem.MAX * ((items[i].Img.Width*1.0)/ items[i].Img.Height);
                       img.UpdateLayout();
                       img.MouseRightButtonDown += (s, e) =>
                       {
@@ -92,13 +92,8 @@ namespace KawaiCalendar
         {
             Action act = () =>
             {
-                int rows;
-               
-                rows= ugItemsYear.Children.Count / ugItemsYear.Columns;
-                if (ugItemsYear.Children.Count % ugItemsYear.Columns != 0)
-                    rows++;
-
-                Height = (rows * Calendar.CalendarItem.MAX) + rowYear.Height.Value;
+                if (ugItemsYear.Children.Count > 0)
+                    Height = Canvas.GetBottom((ugItemsYear.Children.ToArray().LastOrDefault() as UIElement));
             };
 
             Dispatcher.BeginInvoke(act);

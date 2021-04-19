@@ -69,7 +69,7 @@ namespace KawaiCalendar.Calendar {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/KawaiCalendar;V1.0.0.0;component/calendar/diames.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/KawaiCalendar;component/calendar/diames.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Calendar\DiaMes.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

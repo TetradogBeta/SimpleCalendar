@@ -15,7 +15,7 @@
             <TextBlock x:Name="tbYear"/>
         </Viewbox>
 
-        <UniformGrid x:Name="ugItemsYear" Columns="5" Grid.Row="1" />
+        <UniformGrid x:Name="ugItemsYear" Grid.Row="1" />
 
     </Grid>
 </UserControl>
