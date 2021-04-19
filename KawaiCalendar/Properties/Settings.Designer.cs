@@ -70,17 +70,5 @@ namespace KawaiCalendar.Properties {
                 this["Height"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DataBase {
-            get {
-                return ((string)(this["DataBase"]));
-            }
-            set {
-                this["DataBase"] = value;
-            }
-        }
     }
 }

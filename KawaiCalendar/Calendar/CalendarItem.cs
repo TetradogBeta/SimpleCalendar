@@ -60,6 +60,7 @@ namespace KawaiCalendar.Calendar
         {
             Bitmap bmp;
             string path;
+            string idRapidoActual;
 
             if (Equals(img, default))
             {
@@ -92,6 +93,27 @@ namespace KawaiCalendar.Calendar
                     }
                 }
             }
+
+            idRapidoActual = new FileInfo(FilePic).IdUnicoRapido();
+            if (!Equals(idRapidoActual, IdRapido))
+            {//así pueden modificar la imagen y no pasa nada :D
+                try
+                {
+                    img = default;
+                    imgInvertida = default;
+                    img = Img;
+                    path = $"{IdRapido}.jpg";
+                    if (File.Exists(path))
+                        File.Delete(path);
+                   
+                }
+                catch
+                {
+                    //si por lo que sea no se ha podido eliminar pues se queda así
+                }
+
+            }
+            
         }
         #region Serializador
         ElementoBinario IElementoBinarioComplejo.Serialitzer => Serializador;

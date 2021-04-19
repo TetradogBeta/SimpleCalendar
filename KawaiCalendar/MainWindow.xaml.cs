@@ -24,7 +24,7 @@ namespace KawaiCalendar
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "KawaiCalendar V1.6";
+        public const string VERSION = "KawaiCalendar V1.7";
         static MainWindow Main { get; set; }
         Uri ulrGithub = new Uri("https://github.com/TetradogBeta/SimpleCalendar");
         string DataBasePath = "database.bin";
@@ -55,20 +55,6 @@ namespace KawaiCalendar
 
         }
 
-
-
-        public string DataBase
-        {
-            get
-            {
-                return Properties.Settings.Default.DataBase;
-            }
-            set
-            {
-                Properties.Settings.Default.DataBase = value;
-                Properties.Settings.Default.Save();
-            }
-        }
         public double PosX
         {
             get
@@ -216,15 +202,6 @@ namespace KawaiCalendar
         {
             Add(DateTime.Now,e.Data.GetData(DataFormats.FileDrop) as string[]);
         }
-        private DateTime Add(DateTime date,string[] files)
-        {
-            SelectorDeFecha selector = new SelectorDeFecha();
-            selector.Date = date;
-            selector.ShowDialog();
-            CalendarData.DataBase.Add(selector.Date.Value, files);
-            DiaManagerWindow.UpdateDay(selector.Date.Value);
-            return selector.Date.Value;
-        }
 
         private void Window_DragOver(object sender, DragEventArgs e)
         {
@@ -244,5 +221,15 @@ namespace KawaiCalendar
         {
             return Main.AddFilesDialog(startDate);
         }
+        public static DateTime Add(DateTime date, string[] files)
+        {
+            SelectorDeFecha selector = new SelectorDeFecha();
+            selector.Date = date;
+            selector.ShowDialog();
+            CalendarData.DataBase.Add(selector.Date.Value, files);
+            DiaManagerWindow.UpdateDay(selector.Date.Value);
+            return selector.Date.Value;
+        }
+
     }
 }
