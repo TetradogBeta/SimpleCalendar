@@ -29,8 +29,8 @@ namespace KawaiCalendar.Calendar
         const int DIASSEMANA = 7;
         public const int TOTALDAYS = DIASSEMANA * 6;
         const int CICLO = TOTALDAYS * 1000;//cada 42 segundos porque mola :D vale no xD
-        public static CalendarData DataBase { get; set; }
-        public static readonly string[] FormatosValidos = { ".jpeg", ".gif", ".jpg", ".png", ".bmp" };
+
+
 
         bool cambiando;
         DateTime date;
@@ -50,8 +50,6 @@ namespace KawaiCalendar.Calendar
             cambiando = false;
             date = DateTime.Now.AddYears(-2);
 
-            if (Equals(DataBase, default))
-                DataBase = new CalendarData();
 
             for (int i = 0; i < DIAS.Length; i++)
             {
@@ -62,7 +60,6 @@ namespace KawaiCalendar.Calendar
             for (int i = 0; i < TOTALDAYS; i++)
             {
                 diaMes = new DiaMes(GetDate(i));
-                diaMes.MouseLeftButtonUp += (s, e) => new DiaManagerWindow(DataBase, s as DiaMes).Show();
                 ugMes.Children.Add(diaMes);
             }
 
@@ -71,8 +68,9 @@ namespace KawaiCalendar.Calendar
                 cambioImgs.Change(1000, CICLO);
             else cambioImgs.Change(1000, 2000);
 
-            Date = Date;
-            Task.Delay(150).ContinueWith(t=> {
+            UpdateDays();
+            Task.Delay(150).ContinueWith(t =>
+            {
                 CambioImagenes();
             });
 
@@ -80,50 +78,53 @@ namespace KawaiCalendar.Calendar
         }
 
 
-        public bool HasChanges { get => DataBase.HasChanges; set => DataBase.HasChanges = value; }
+
         public DateTime Date
         {
             get => date;
             set
             {
-                DiaMes dia;
-                int dayOfWeek;
-                int dayOfYear;
+
                 bool hasChanges = value.Month != date.Month || value.Year != date.Year;
                 date = value;
-                DataBase.SetDate(date);
+                CalendarData.DataBase.SetDate(date);
+                UpdateDays(hasChanges);
 
-                dayOfWeek = (int)DataBase.FirstDayMonth.DayOfWeek - 1;
-                if (dayOfWeek < 0)
-                    dayOfWeek = 6;//domingo
-                dayOfYear = DataBase.FirstDayMonth.DayOfYear;
-                //pongo el dia
-                for (int i = 0; i < TOTALDAYS; i++)
-                {
-                    dia = ugMes.Children[i + DIASSEMANA] as DiaMes;
-                    dia.Date = DataBase.FirstDayMonth.AddDays(i - dayOfWeek);
-                    if (hasChanges)
-                    {
-                        dia.SetItems(GetList(new DateDay(dia.Date)));
-                        if (!Equals(dia.Tag, default))
-                            dia.NextPic();
-                    }
-                    dia.IsSelected = null;
-                }
-                for (int i = dayOfWeek, j = 0; j < DataBase.DiasMes; j++, i++)
-                {
-                    dia = ugMes.Children[i + DIASSEMANA] as DiaMes;
-                    dia.Date = DataBase.FirstDayMonth.AddDays(i - dayOfWeek);
-                    dia.IsSelected = false;
-                }
-                //selecciono el dia del mes
-                (ugMes.Children[DIASSEMANA + dayOfWeek + date.Day - 1] as DiaMes).IsSelected = true;
 
                 if (ChangeDate != null)
                     ChangeDate(this, new EventArgs());
             }
         }
+        private void UpdateDays(bool hasChanges = false)
+        {
+            DiaMes dia;
+            int dayOfWeek;
 
+            dayOfWeek = (int)CalendarData.DataBase.FirstDayMonth.DayOfWeek - 1;
+            if (dayOfWeek < 0)
+                dayOfWeek = 6;//domingo
+            //pongo el dia
+            for (int i = 0; i < TOTALDAYS; i++)
+            {
+                dia = ugMes.Children[i + DIASSEMANA] as DiaMes;
+                dia.Date = CalendarData.DataBase.FirstDayMonth.AddDays(i - dayOfWeek);
+                if (hasChanges)
+                {
+                    _ = dia.SetItems(CalendarData.DataBase.GetList(new DateDay(dia.Date)));
+                    if (!Equals(dia.Tag, default))
+                        _ = dia.NextPic();
+                }
+                dia.IsSelected = null;
+            }
+            for (int i = dayOfWeek, j = 0; j < CalendarData.DataBase.DiasMes; j++, i++)
+            {
+                dia = ugMes.Children[i + DIASSEMANA] as DiaMes;
+                dia.Date = CalendarData.DataBase.FirstDayMonth.AddDays(i - dayOfWeek);
+                dia.IsSelected = false;
+            }
+            //selecciono el dia del mes
+            (ugMes.Children[DIASSEMANA + dayOfWeek + date.Day - 1] as DiaMes).IsSelected = true;
+        }
 
         private void CambioImagenes(object state = null)
         {
@@ -131,7 +132,7 @@ namespace KawaiCalendar.Calendar
             int diaACambiar;
             DateTime dateAux;
             Action act;
-            List<int> posiciones=default;
+            List<int> posiciones = default;
             int cambios;
             DispatcherOperation dispatcher;
             act = () =>
@@ -141,13 +142,13 @@ namespace KawaiCalendar.Calendar
                      DiaMes dia = d as DiaMes;
                      bool correcto = !Equals(dia, default);
                      if (correcto)
-                         correcto =!Equals(dia.GetItems(),default) && dia.GetItems().Count > 0;
+                         correcto = !Equals(dia.GetItems(), default) && dia.GetItems().Count > 0;
                      return correcto;
 
 
                  }).Convert((d) => ugMes.Children.IndexOf(d as UIElement)));
             };
-            dispatcher=Dispatcher.BeginInvoke(act);
+            dispatcher = Dispatcher.BeginInvoke(act);
             while (dispatcher.Status != DispatcherOperationStatus.Completed) Thread.Sleep(100);
             cambios = MiRandom.Next(posiciones.Count);
 
@@ -163,7 +164,7 @@ namespace KawaiCalendar.Calendar
                         posiciones.Remove(diaACambiar);
 
                         dateAux = GetDate(diaACambiar);
-                        (ugMes.Children[diaACambiar + DIASSEMANA] as DiaMes).NextPic();
+                        _ = (ugMes.Children[diaACambiar + DIASSEMANA] as DiaMes).NextPic();
                     }
                     cambiando = false;
                 };
@@ -174,52 +175,11 @@ namespace KawaiCalendar.Calendar
         private DateTime GetDate(int posMonth)
         {
 
-            posMonth -= (int)DataBase.FirstDayMonth.DayOfWeek - 1;
-            return DataBase.FirstDayMonth.AddDays(posMonth);
+            posMonth -= (int)CalendarData.DataBase.FirstDayMonth.DayOfWeek - 1;
+            return CalendarData.DataBase.FirstDayMonth.AddDays(posMonth);
         }
 
-        private List<CalendarItem> GetList(DateDay dayOfYear)
-        {
-            List<CalendarItem> items;
 
-            if (!DataBase.DayItems.ContainsKey(dayOfYear))
-                items = default;
-            else items = DataBase.DayItems[dayOfYear];
 
-            return items;
-        }
-        public void Add(DateTime date, params string[] items)
-        {
-            Notifications.Wpf.Core.NotificationManager manager = new Notifications.Wpf.Core.NotificationManager();
-
-            if (!DataBase.DayItems.ContainsKey(new DateDay(date)))
-                DataBase.DayItems.Add(new DateDay(date), new List<CalendarItem>());
-            try
-            {
-                DataBase.WaitUseDic();
-                DataBase.DayItems[new DateDay(date)].AddRange(items.Filtra(s =>
-                {
-
-                    bool result = FormatosValidos.Contains(new FileInfo(s).Extension);
-                    if (!result)
-                    {
-
-                        manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
-                        {
-                            Title = "Incompatible file",
-                            Message = System.IO.Path.GetFileName(s),
-                            Type = Notifications.Wpf.Core.NotificationType.Error
-                        });
-                    }
-                    return result;
-                }).Convert((img) => new CalendarItem { FilePic = img, Year = date.Year }));
-            }
-            catch { }
-            finally
-            {
-                DataBase.ReleaseUseDic();
-            }
-            HasChanges = true;
-        }
     }
 }

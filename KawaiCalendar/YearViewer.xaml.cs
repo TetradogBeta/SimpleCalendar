@@ -20,31 +20,28 @@ namespace KawaiCalendar
     /// <summary>
     /// Lógica de interacción para YearViewer.xaml
     /// </summary>
-    public partial class YearViewer : UserControl
+    public partial class YearViewer : UserControl,IComparable<YearViewer>,IComparable
     {
 
         public YearViewer()
         {
             InitializeComponent();
         }
-        public YearViewer(DateTime date, CalendarData dataBase, KeyValuePair<int, List<Calendar.CalendarItem>> item) : this()
+        public YearViewer(DateTime date,  KeyValuePair<int, List<Calendar.CalendarItem>> item=default) : this()
         {
 
-            DataBase = dataBase;
             Date = date;
             Reload(item);
 
         }
 
-
-        CalendarData DataBase { get; set; }
         public DateTime Date { get; set; }
 
         public void Reload(KeyValuePair<int, List<Calendar.CalendarItem>> item = default)
         {
             Image img;
             Action act;
-            List<Calendar.CalendarItem> items = Equals(item.Value, default) ? DataBase.GetItemsGroupByYear(new DateDay(Date), Date.Year)[Date.Year] : item.Value;
+            List<Calendar.CalendarItem> items = Equals(item.Value, default) ? CalendarData.DataBase.GetItemsGroupByYear(new DateDay(Date), Date.Year)[Date.Year] : item.Value;
             tbYear.Text = Date.Year + "";
             act = () =>
               {
@@ -66,12 +63,14 @@ namespace KawaiCalendar
                       img.MouseLeftButtonDown += (s, e) =>
                        {
                            Action act;
+                           Image img;
                            if (MessageBox.Show("¿Quieres quitarlo del dia?", "Atención", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                            {
-                               DataBase.Remove(Date, (s as Image).Tag as Calendar.CalendarItem);
+                               img = s as Image;
+                               CalendarData.DataBase.Remove(Date, img.Tag as Calendar.CalendarItem);
                                act = () =>
                                {
-                                   ugItemsYear.Children.Remove(s as UIElement);
+                                   ugItemsYear.Children.Remove(img);
 
                                    if (ugItemsYear.Children.Count == 0)
                                        (Parent as StackPanel).Children.Remove(this);
@@ -99,10 +98,27 @@ namespace KawaiCalendar
                 if (ugItemsYear.Children.Count % ugItemsYear.Columns != 0)
                     rows++;
 
-                Height = (rows* Calendar.CalendarItem.MAX) + rowYear.Height.Value;
+                Height = (rows * Calendar.CalendarItem.MAX) + rowYear.Height.Value;
             };
 
             Dispatcher.BeginInvoke(act);
+        }
+
+        int IComparable<YearViewer>.CompareTo(YearViewer other)
+        {
+            return ICompareTo(other);
+        }
+
+        int IComparable.CompareTo(object obj)
+        {
+            return ICompareTo(obj as YearViewer);
+        }
+        int ICompareTo(YearViewer other)
+        {
+            int compareTo = Equals(other, default) ? -1 : 0;
+            if (compareTo == 0)
+                compareTo = Date.Year.CompareTo(other.Date.Year);
+            return compareTo;
         }
     }
 }

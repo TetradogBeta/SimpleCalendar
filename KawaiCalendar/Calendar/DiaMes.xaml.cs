@@ -188,7 +188,7 @@ namespace KawaiCalendar.Calendar
         {
             AbrirArchivo(Tag);
         }
-        public static void AbrirArchivo(object tag)
+        public static void AbrirArchivo(object tagFileName)
         {
             const int ERROR = 1;
 
@@ -196,9 +196,9 @@ namespace KawaiCalendar.Calendar
             Notifications.Wpf.Core.NotificationManager manager;
             System.Diagnostics.Process process;
 
-            if (!Equals(tag, default))
+            if (!Equals(tagFileName, default))
             {
-                file = new FileInfo(tag + "");
+                file = new FileInfo(tagFileName + "");
                 if (file.Exists)
                 {
                     process = file.Abrir();
@@ -222,13 +222,18 @@ namespace KawaiCalendar.Calendar
                     manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
                     {
                         Title = "Archivo no encontrado",
-                        Message = $"'{(tag as CalendarItem).FileName}'",
+                        Message = $"'{(tagFileName as CalendarItem).FileName}'",
                         Type = Notifications.Wpf.Core.NotificationType.Information,
 
                     });
                 }
 
             }
+        }
+
+        private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            new DiaManagerWindow(this).Show();
         }
     }
 }

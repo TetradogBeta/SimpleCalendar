@@ -5,7 +5,7 @@ using System.Text;
 
 namespace KawaiCalendar.Calendar
 {
-    public class DateDay:IComparable<DateDay>,IComparable,IElementoBinarioComplejo
+    public class DateDay : IComparable<DateDay>, IComparable, IElementoBinarioComplejo
     {
         public static ElementoBinario Serializador = ElementoBinario.GetSerializador<DateDay>();
 
@@ -39,5 +39,6 @@ namespace KawaiCalendar.Calendar
                 compareTo = Month.CompareTo(other.Month);
             return compareTo;
         }
+        public static implicit  operator DateDay(DateTime date)=> new DateDay(date);
     }
 }

@@ -47,42 +47,7 @@ namespace KawaiCalendar.Calendar
         {
             get
             {
-                Bitmap bmp;
-                string path;
-
-
-
-                if (Equals(img, default))
-                {
-                    if (Equals(Hash, default))
-                    {
-                        if (File.Exists(FilePic))
-                        {
-                            bmp = new Bitmap(FilePic);
-
-                            Hash = bmp.GetBytes().Hash();
-                            IdRapido = new FileInfo(FilePic).IdUnicoRapido();
-
-                            img = bmp.SetMaxHeight(MAX);
-                            path = System.IO.Path.Combine(Directory, IdRapido + EXTENSION);
-                            if (!File.Exists(path))
-                                img.Save(path, Formato);
-                        }
-                    }
-                    else
-                    {
-                        path = System.IO.Path.Combine(Directory, IdRapido + EXTENSION);
-                        if (File.Exists(path))
-                        {
-                            img = new Bitmap(path);
-                        }
-                        else if (File.Exists(FilePic))
-                        {
-                            Hash = default;
-                            img = Img;
-                        }
-                    }
-                }
+                LoadImg();
                 return img;
             }
             set
@@ -91,9 +56,57 @@ namespace KawaiCalendar.Calendar
             }
         }
 
+        private void LoadImg()
+        {
+            Bitmap bmp;
+            string path;
+
+            if (Equals(img, default))
+            {
+                if (Equals(Hash, default))
+                {
+                    if (File.Exists(FilePic))
+                    {
+                        bmp = new Bitmap(FilePic);
+
+                        Hash = bmp.GetBytes().Hash();
+                        IdRapido = new FileInfo(FilePic).IdUnicoRapido();
+
+                        img = bmp.SetMaxHeight(MAX);
+                        path = System.IO.Path.Combine(Directory, IdRapido + EXTENSION);
+                        if (!File.Exists(path))
+                            img.Save(path, Formato);
+                    }
+                }
+                else
+                {
+                    path = System.IO.Path.Combine(Directory, IdRapido + EXTENSION);
+                    if (File.Exists(path))
+                    {
+                        img = new Bitmap(path);
+                    }
+                    else if (File.Exists(FilePic))
+                    {
+                        Hash = default;
+                        LoadImg();
+                    }
+                }
+            }
+        }
+        #region Serializador
         ElementoBinario IElementoBinarioComplejo.Serialitzer => Serializador;
 
 
+        void ISaveAndLoad.Load()
+        {
+
+        }
+
+        void ISaveAndLoad.Save()
+        {
+            LoadImg();
+        }
+        #endregion
         public Bitmap GetImgOrInvertida() => File.Exists(FilePic) ? Img : ImgInvertida;
 
         public int CompareTo(object obj)
@@ -115,14 +128,5 @@ namespace KawaiCalendar.Calendar
             return FilePic;
         }
 
-        void ISaveAndLoad.Load()
-        {
-
-        }
-
-        void ISaveAndLoad.Save()
-        {
-            Img = Img;
-        }
     }
 }

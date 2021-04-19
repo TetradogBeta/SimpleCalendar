@@ -1,4 +1,5 @@
 ﻿using Gabriel.Cat.S.Extension;
+using KawaiCalendar.Calendar;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace KawaiCalendar
             Main = this;
             if (File.Exists(DataBasePath))
             {
-                Calendar.Calendar.DataBase = Calendar.CalendarData.Serializador.GetObject(File.ReadAllBytes(DataBasePath)) as Calendar.CalendarData;
+                Calendar.CalendarData.DataBase = Calendar.CalendarData.Serializador.GetObject(File.ReadAllBytes(DataBasePath)) as Calendar.CalendarData;
             }
             InitializeComponent();
 
@@ -124,10 +125,10 @@ namespace KawaiCalendar
             PosX = Left;
             HeightWin = Height;
             WidthWin = Width;
-            if (calendar.HasChanges)
+            if (Calendar.CalendarData.DataBase.HasChanges)
             {
-                Calendar.CalendarData.Serializador.GetBytes(Calendar.Calendar.DataBase).Save(DataBasePath);
-                calendar.HasChanges = false;
+                Calendar.CalendarData.Serializador.GetBytes(Calendar.CalendarData.DataBase).Save(DataBasePath);
+                Calendar.CalendarData.DataBase.HasChanges = false;
             }
             calendar_ChangeDate();
         }
@@ -220,7 +221,7 @@ namespace KawaiCalendar
             SelectorDeFecha selector = new SelectorDeFecha();
             selector.Date = date;
             selector.ShowDialog();
-            calendar.Add(selector.Date.Value, files);
+            CalendarData.DataBase.Add(selector.Date.Value, files);
             return selector.Date.Value;
         }
 
@@ -238,9 +239,9 @@ namespace KawaiCalendar
 
             }
         }
-        public static DateTime AddFiles(DateTime date)
+        public static DateTime AddFiles(DateTime startDate)
         {
-            return Main.AddFilesDialog(date);
+            return Main.AddFilesDialog(startDate);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using Gabriel.Cat.S.Binaris;
 using Gabriel.Cat.S.Extension;
@@ -10,13 +11,14 @@ namespace KawaiCalendar.Calendar
     {
         public static ElementoBinario Serializador = ElementoBinario.GetSerializador<CalendarData>();
 
-        Semaphore semaphore;
+        [IgnoreSerialitzer]
+        public static readonly string[] FormatosValidos = { ".jpeg", ".gif", ".jpg", ".png", ".bmp" };
+        [IgnoreSerialitzer]
+        public static CalendarData DataBase { get; set; } = new CalendarData();
         public CalendarData()
         {
-            SetDate(DateTime.Now);
             DayItems = new SortedList<DateDay, List<CalendarItem>>();
-            semaphore = new Semaphore(1,1);
-
+            SetDate(DateTime.Now);
         }
         public SortedList<DateDay, List<CalendarItem>> DayItems { get; set; }
 
@@ -28,8 +30,7 @@ namespace KawaiCalendar.Calendar
         public bool HasChanges { get; set; }
 
         ElementoBinario IElementoBinarioComplejo.Serialitzer => Serializador;
-        public void WaitUseDic() => semaphore.WaitOne();
-        public void ReleaseUseDic() => semaphore.Release();
+
         public void SetDate(DateTime date)
         {
             FirstDayMonth = new DateTime(date.Year, date.Month, 1);
@@ -55,10 +56,45 @@ namespace KawaiCalendar.Calendar
 
         public void Remove(DateTime date,CalendarItem calendarItem)
         {
-            WaitUseDic();
+
             DayItems[new DateDay(date)].Remove(calendarItem);
 
-            ReleaseUseDic();
+            HasChanges = true;
+        }
+        public List<CalendarItem> GetList(DateDay dayOfYear)
+        {
+            List<CalendarItem> items;
+
+            if (!this.DayItems.ContainsKey(dayOfYear))
+                items = default;
+            else items = this.DayItems[dayOfYear];
+
+            return items;
+        }
+        public void Add(DateTime date, params string[] items)
+        {
+            Notifications.Wpf.Core.NotificationManager manager = new Notifications.Wpf.Core.NotificationManager();
+
+            if (!this.DayItems.ContainsKey(new DateDay(date)))
+                this.DayItems.Add(new DateDay(date), new List<CalendarItem>());
+          
+                this.DayItems[new DateDay(date)].AddRange(items.Filtra(s =>
+                {
+
+                    bool result = FormatosValidos.Contains(new FileInfo(s).Extension);
+                    if (!result)
+                    {
+
+                        manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
+                        {
+                            Title = "Incompatible file",
+                            Message = System.IO.Path.GetFileName(s),
+                            Type = Notifications.Wpf.Core.NotificationType.Error
+                        });
+                    }
+                    return result;
+                }).Convert((img) => new CalendarItem { FilePic = img, Year = date.Year }));
+         
             HasChanges = true;
         }
     }
