@@ -31,6 +31,8 @@ namespace KawaiCalendar.Calendar
 
         public string Hash { get; set; }
         public string IdRapido { get; set; }
+        [IgnoreSerialitzer]
+        public DateDay Date { get; set; }
 
         [IgnoreSerialitzer]
         public Bitmap ImgInvertida
@@ -61,22 +63,28 @@ namespace KawaiCalendar.Calendar
             Bitmap bmp;
             string path;
             string idRapidoActual;
+            FileInfo file;
+            byte[] dataImg;
 
+            file = new FileInfo(FilePic);
             if (Equals(img, default))
             {
                 if (Equals(Hash, default))
                 {
                     if (File.Exists(FilePic))
                     {
-                        bmp = new Bitmap(FilePic);
+                
+                        dataImg = file.GetBytes();
+                        bmp = (Bitmap)Bitmap.FromStream(new MemoryStream(dataImg));
 
-                        Hash = bmp.GetBytes().Hash();
-                        IdRapido = new FileInfo(FilePic).IdUnicoRapido();
+                        Hash = dataImg.Hash();
+                        IdRapido = file.IdUnicoRapido();
 
                         img = bmp.SetMaxHeight(MAX);
                         path = System.IO.Path.Combine(Directory, IdRapido + EXTENSION);
                         if (!File.Exists(path))
                             img.Save(path, Formato);
+                
                     }
                 }
                 else
@@ -86,7 +94,7 @@ namespace KawaiCalendar.Calendar
                     {
                         img = new Bitmap(path);
                     }
-                    else if (File.Exists(FilePic))
+                    else if (file.Exists)
                     {
                         Hash = default;
                         LoadImg();
@@ -94,24 +102,28 @@ namespace KawaiCalendar.Calendar
                 }
             }
 
-            idRapidoActual = new FileInfo(FilePic).IdUnicoRapido();
-            if (!Equals(idRapidoActual, IdRapido))
-            {//así pueden modificar la imagen y no pasa nada :D
-                try
-                {
-                    img = default;
-                    imgInvertida = default;
-                    img = Img;
-                    path = $"{IdRapido}.jpg";
-                    if (File.Exists(path))
-                        File.Delete(path);
-                   
-                }
-                catch
-                {
-                    //si por lo que sea no se ha podido eliminar pues se queda así
-                }
+            if (file.Exists)
+            {
+                idRapidoActual = file.IdUnicoRapido();
+                if (!Equals(idRapidoActual, IdRapido))
+                {//así pueden modificar la imagen y no pasa nada :D
+                    try
+                    {
+                        img = default;
+                        imgInvertida = default;
+                        Hash = default;
+                        img = Img;
+                        path = $"{IdRapido}{EXTENSION}";
+                        if (File.Exists(path))
+                            File.Delete(path);
 
+                    }
+                    catch
+                    {
+                        //si por lo que sea no se ha podido eliminar pues se queda así
+                    }
+
+                }
             }
             
         }

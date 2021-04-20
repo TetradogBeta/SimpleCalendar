@@ -7,7 +7,7 @@ using Gabriel.Cat.S.Extension;
 
 namespace KawaiCalendar.Calendar
 {
-    public class CalendarData : IElementoBinarioComplejo
+    public class CalendarData : IElementoBinarioComplejo,ISaveAndLoad
     {
         public static ElementoBinario Serializador = ElementoBinario.GetSerializador<CalendarData>();
 
@@ -74,11 +74,11 @@ namespace KawaiCalendar.Calendar
         public void Add(DateTime date, params string[] items)
         {
             Notifications.Wpf.Core.NotificationManager manager = new Notifications.Wpf.Core.NotificationManager();
-
-            if (!this.DayItems.ContainsKey(new DateDay(date)))
-                this.DayItems.Add(new DateDay(date), new List<CalendarItem>());
+            DateDay dateDay = new DateDay(date);
+            if (!this.DayItems.ContainsKey(dateDay))
+                this.DayItems.Add(dateDay, new List<CalendarItem>());
           
-                this.DayItems[new DateDay(date)].AddRange(items.Filtra(s =>
+                this.DayItems[dateDay].AddRange(items.Filtra(s =>
                 {
 
                     bool result = FormatosValidos.Contains(new FileInfo(s).Extension);
@@ -93,9 +93,23 @@ namespace KawaiCalendar.Calendar
                         });
                     }
                     return result;
-                }).Convert((img) => new CalendarItem { FilePic = img, Year = date.Year }));
+                }).Convert((img) => new CalendarItem { FilePic = img, Year = date.Year,Date= dateDay }));
          
             HasChanges = true;
+        }
+
+        void ISaveAndLoad.Save()
+        {
+
+        }
+
+        void ISaveAndLoad.Load()
+        {
+           foreach(var items in DayItems)
+            {
+                for (int i = 0; i < items.Value.Count; i++)
+                    items.Value[i].Date = items.Key;
+            }
         }
     }
 }

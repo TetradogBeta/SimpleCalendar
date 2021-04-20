@@ -108,12 +108,16 @@ namespace KawaiCalendar.Calendar
                            {
                                item = GetItems()[pos % GetItems().Count];
                                imgDia.SetImage(item.Img);
+                               
                                Tag = item;
+                               UpdateText();
                            }
                            else
                            {
                                imgDia.SetImage(new Bitmap(1, 1));
+                             
                                Tag = default;
+                               UpdateText();
                            }
                        }
                    }
@@ -143,8 +147,29 @@ namespace KawaiCalendar.Calendar
             set
             {
                 date = value;
-                tbDia.Text = date.Day + "";
+                UpdateText();
                 imgDia.SetImage(new Bitmap(1, 1));
+            }
+        }
+
+        private void UpdateText()
+        {
+            int years;
+            CalendarItem item = Tag as CalendarItem;
+            if (!MouseHover || Equals(item, default) || item.Date.CompareTo(new DateDay(Date))!=0)
+            {
+                tbDia.Text = date.Day + "";
+                tbDia.Foreground = System.Windows.Media.Brushes.Black;
+            }
+            else
+            {
+                years = Date.Year - item.Year;
+                if (years > 0)
+                {
+                    tbDia.Text = years + "";
+                    tbDia.Foreground = System.Windows.Media.Brushes.Gold;
+                }
+                else tbDia.Text = "";
             }
         }
 
@@ -173,9 +198,10 @@ namespace KawaiCalendar.Calendar
         private void UserControl_MouseEnter(object sender, MouseEventArgs e)
         {
 
-            if (!Equals(imgDia.Source, default) && !double.IsNaN(imgDia.Source.Width) && imgDia.Source.Width > 10)
+            if (!Equals(imgDia.Source, default) && !double.IsNaN(imgDia.Source.Width) && imgDia.Source.Width > 10 && Equals(Tag, default))
                 tbDia.Foreground = System.Windows.Media.Brushes.Transparent;
             MouseHover = true;
+            UpdateText();
 
         }
 
@@ -183,6 +209,7 @@ namespace KawaiCalendar.Calendar
         {
             tbDia.Foreground = System.Windows.Media.Brushes.Black;
             MouseHover = false;
+            UpdateText();
         }
 
         private void UserControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
