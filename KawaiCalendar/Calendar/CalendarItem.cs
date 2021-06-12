@@ -9,9 +9,11 @@ namespace KawaiCalendar.Calendar
 {
     public class CalendarItem : IElementoBinarioComplejo, ISaveAndLoad, IComparable, IComparable<CalendarItem>
     {
-        public const string EXTENSION = ".jpeg";
+        public const string EXTENSION_DEFAULT = ".jpeg";
+        public const string EXTENSION_TRANSPARENT = ".png";
         public const int MAX = 250;
-        public static readonly System.Drawing.Imaging.ImageFormat Formato = System.Drawing.Imaging.ImageFormat.Jpeg;
+        public static readonly System.Drawing.Imaging.ImageFormat FormatoDefault = System.Drawing.Imaging.ImageFormat.Jpeg;
+        public static readonly System.Drawing.Imaging.ImageFormat FormatoTransparent = System.Drawing.Imaging.ImageFormat.Png;
 
         public static ElementoBinario Serializador = ElementoBinario.GetSerializador<CalendarItem>();
         public static string Directory;
@@ -61,11 +63,13 @@ namespace KawaiCalendar.Calendar
         private void LoadImg()
         {
             Bitmap bmp;
-            string path;
             string idRapidoActual;
             FileInfo file;
             byte[] dataImg;
+            string extension;
+            Notifications.Wpf.Core.NotificationManager manager;
 
+            string path = string.Empty;
             file = new FileInfo(FilePic);
             if (Equals(img, default))
             {
@@ -81,15 +85,41 @@ namespace KawaiCalendar.Calendar
                         IdRapido = file.IdUnicoRapido();
 
                         img = bmp.SetMaxHeight(MAX);
-                        path = System.IO.Path.Combine(Directory, IdRapido + EXTENSION);
+                        path = System.IO.Path.Combine(Directory, IdRapido);
+                        if (bmp.IsArgb())
+                        {
+                            path += EXTENSION_TRANSPARENT;
+                        }
+                        else
+                        {
+                            path += EXTENSION_DEFAULT;
+                        }
                         if (!File.Exists(path))
-                            img.Save(path, Formato);
+                        {
+                            if (bmp.IsArgb())
+                            {
+                                img.Save(path, FormatoTransparent);
+                            }
+                            else
+                            {
+                                img.Save(path, FormatoDefault);
+                            }
+                      
+                        }
                 
                     }
                 }
                 else
                 {
-                    path = System.IO.Path.Combine(Directory, IdRapido + EXTENSION);
+                    path = System.IO.Path.Combine(Directory, IdRapido);
+                    if (IdRapido.Split(';')[0]==EXTENSION_TRANSPARENT)
+                    {
+                        path += EXTENSION_TRANSPARENT;
+                    }
+                    else
+                    {
+                        path += EXTENSION_DEFAULT;
+                    }
                     if (File.Exists(path))
                     {
                         img = new Bitmap(path);
@@ -112,15 +142,40 @@ namespace KawaiCalendar.Calendar
                         img = default;
                         imgInvertida = default;
                         Hash = default;
-                        img = Img;
-                        path = $"{IdRapido}{EXTENSION}";
+                     
+                        extension = ((Bitmap)Bitmap.FromStream(file.GetStream())).IsArgb() ? EXTENSION_TRANSPARENT : EXTENSION_DEFAULT;
+                        path = $"{IdRapido}{extension}";
                         if (File.Exists(path))
                             File.Delete(path);
 
+                        img = Img;
+
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        //si por lo que sea no se ha podido eliminar pues se queda así
+                        manager = new Notifications.Wpf.Core.NotificationManager();
+                        if (!Equals(path, default))
+                        {
+                            //si por lo que sea no se ha podido eliminar pues se queda así
+                           
+                            manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
+                            {
+                                Title = "Problemas al actualizar el Thumbnail",
+                                Message = $"No se ha podido eliminar el archivo '{path}' quizás se esté usando actualmente.",
+                                Type = Notifications.Wpf.Core.NotificationType.Information,
+
+                            });
+                        }
+                        else
+                        {
+                            manager.ShowAsync(new Notifications.Wpf.Core.NotificationContent()
+                            {
+                                Title = "Exception",
+                                Message =ex.Message,
+                                Type = Notifications.Wpf.Core.NotificationType.Error,
+
+                            });
+                        }
                     }
 
                 }

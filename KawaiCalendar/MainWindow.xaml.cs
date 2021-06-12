@@ -24,7 +24,7 @@ namespace KawaiCalendar
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "KawaiCalendar V1.7";
+        public const string VERSION = "KawaiCalendar V1.7B";
         static MainWindow Main { get; set; }
         Uri ulrGithub = new Uri("https://github.com/TetradogBeta/SimpleCalendar");
         string DataBasePath = "database.bin";
